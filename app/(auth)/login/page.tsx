@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -42,7 +42,7 @@ export default function LoginPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function signIn(event: FormEvent<HTMLFormElement>) {
+  async function signIn(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
     setNotice(null);
@@ -88,18 +88,18 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-foreground/20 via-background to-primary/20 px-4 py-10 text-foreground">
+    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-linear-to-br from-foreground/20 via-background to-primary/20 px-4 py-10 text-foreground">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:48px_48px] opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_75%)]"
+        className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-size-[48px_48px] opacity-30 mask-[radial-gradient(ellipse_at_center,black_10%,transparent_75%)]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 z-0 size-[32rem] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
+        className="pointer-events-none absolute -top-40 left-1/2 z-0 size-128 -translate-x-1/2 rounded-full bg-primary/10 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-40 -bottom-48 z-0 size-[30rem] rounded-full bg-muted/70 blur-3xl"
+        className="pointer-events-none absolute -right-40 -bottom-48 z-0 size-120 rounded-full bg-muted/70 blur-3xl"
       />
       <section className="relative z-10 w-full max-w-lg rounded-2xl border border-border bg-card p-8 shadow-2xl shadow-foreground/10 sm:p-10">
         <div className="mb-8">
