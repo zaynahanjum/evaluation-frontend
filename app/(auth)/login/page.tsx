@@ -13,6 +13,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import { saveAdminSession } from "@/lib/admin-session";
 import {
   apiBaseUrl,
   saveEvaluatorSession,
@@ -28,7 +30,7 @@ type LoginResponse = {
     accessToken: string;
     refreshToken: string;
     role: UserRole;
-    user?: { username: string };
+    user?: { id: string; username: string };
     team?: { username: string };
   };
 };
@@ -64,6 +66,17 @@ export default function LoginPage() {
         return;
       }
 
+      if (payload.data.role === "ADMIN") {
+        saveAdminSession({
+          accessToken: payload.data.accessToken,
+          refreshToken: payload.data.refreshToken,
+          username: payload.data.user?.username ?? username,
+          userId: payload.data.user?.id ?? "",
+        });
+        router.replace("/admin");
+        return;
+      }
+
       if (payload.data.role === "MENTOR" || payload.data.role === "JUDGE") {
         saveEvaluatorSession({
           accessToken: payload.data.accessToken,
@@ -76,7 +89,7 @@ export default function LoginPage() {
       }
 
       setNotice(
-        `${payload.data.role === "ADMIN" ? "Admin" : "Team"} sign-in was successful. That portal is not available in this frontend yet.`,
+        "Team sign-in was successful. That portal is not available in this frontend yet.",
       );
     } catch {
       setError(
@@ -210,7 +223,8 @@ export default function LoginPage() {
             ) : null}
             {isSubmitting ? "Signing in…" : "Sign in"}
             {!isSubmitting ? <ArrowRight aria-hidden="true" /> : null}
-          </Button>
+          </Button> 
+
         </form>
       </section>
     </main>
