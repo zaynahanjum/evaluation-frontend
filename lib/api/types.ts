@@ -142,6 +142,66 @@ export type Panel = {
   teams: PanelTeamRef[];
 };
 
+export type RoundDetail = {
+  id: string;
+  name: string;
+  type: RoundType;
+  roundNumber: number;
+  status: RoundStatus;
+  startedAt: string | null;
+  endedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  criteria: Criterion[];
+  panels: Panel[];
+  _count: {
+    evaluations: number;
+  };
+};
+
+export type Participant = {
+  id: string;
+  name: string;
+  hotelNo: string | null;
+  roomName: string | null;
+};
+
+export type TeamSubmission = {
+  id: string;
+  problemStatement: string | null;
+  solution: string | null;
+  driveLink: string | null;
+  githubRepoLink: string | null;
+  deploymentLink: string | null;
+  submittedAt: string;
+  updatedAt: string;
+} | null;
+
+export type TeamPanelAssignment = {
+  panel: {
+    id: string;
+    name: string;
+    round: {
+      id: string;
+      name: string;
+      type: RoundType;
+      status: RoundStatus;
+    };
+  };
+};
+
+export type TeamDetail = {
+  id: string;
+  name: string;
+  username: string;
+  isTopTen: boolean;
+  isActive: boolean;
+  createdAt: string;
+  participants: Participant[];
+  submission: TeamSubmission;
+  panelTeams: TeamPanelAssignment[];
+};
+
 export type TeamSummary = {
   id: string;
   name: string;
@@ -149,6 +209,35 @@ export type TeamSummary = {
   isTopTen: boolean;
   isActive: boolean;
   createdAt: string;
+};
+
+export type ParticipantInput = {
+  name: string;
+  hotelNo?: string;
+  roomName?: string;
+};
+
+export type CreateTeamPayload = {
+  username: string;
+  password: string;
+  name: string;
+  participants: ParticipantInput[];
+};
+
+export type UpdateTeamPayload = {
+  name?: string;
+  username?: string;
+  isActive?: boolean;
+};
+
+export type UpdateParticipantPayload = {
+  name?: string;
+  hotelNo?: string;
+  roomName?: string;
+};
+
+export type SetTopTeamsPayload = {
+  teamIds: string[];
 };
 
 export type ScoreItem = {
@@ -217,4 +306,50 @@ export type DashboardData = {
   }>;
   topTeams: Array<{ id: string; name: string }>;
   submissionLocked: boolean;
+};
+
+export type TimelineEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  scheduledAt: string;
+  visibleToTeams: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateTimelinePayload = {
+  title: string;
+  description?: string;
+  scheduledAt: string;
+  visibleToTeams?: boolean;
+};
+
+export type UpdateTimelinePayload = {
+  title?: string;
+  description?: string;
+  scheduledAt?: string;
+  visibleToTeams?: boolean;
+};
+
+export type AdminSubmissionRecord = {
+  id: string;
+  teamId: string;
+  problemStatement: string | null;
+  solution: string | null;
+  driveLink: string | null;
+  deploymentLink: string | null;
+  githubRepoLink: string | null;
+  submittedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  team: {
+    id: string;
+    name: string;
+  };
+};
+
+export type SubmissionsPayload = {
+  submissionLocked: boolean;
+  submissions: AdminSubmissionRecord[];
 };

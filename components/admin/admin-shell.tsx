@@ -4,12 +4,15 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  CalendarClock,
   ClipboardList,
+  FileCode2,
   LayoutDashboard,
   LogOut,
   PanelsTopLeft,
   Trophy,
   Users,
+  UsersRound,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -20,16 +23,18 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/users", label: "Mentors & Judges", icon: Users },
+  { href: "/admin/teams", label: "Teams", icon: UsersRound },
   { href: "/admin/rounds", label: "Rounds", icon: ClipboardList },
   { href: "/admin/panels", label: "Panels", icon: PanelsTopLeft },
   { href: "/admin/scores", label: "Scores", icon: Trophy },
+  { href: "/admin/submissions", label: "Submissions", icon: FileCode2 },
+  { href: "/admin/timeline", label: "Timeline", icon: CalendarClock },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [username, setUsername] = useState<string | null>(null);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const session = getAdminSession();
@@ -37,8 +42,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       router.replace("/login");
       return;
     }
-    setUsername(session.username);
-    setReady(true);
+    const timeoutId = window.setTimeout(() => {
+      setUsername(session.username);
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
   }, [router]);
 
   async function signOut() {
@@ -48,14 +55,6 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     }
     clearAdminSession();
     router.replace("/login");
-  }
-
-  if (!ready) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-muted-foreground">
-        Checking admin session…
-      </div>
-    );
   }
 
   return (
@@ -69,7 +68,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </div>
               <div>
                 <p className="text-sm font-semibold">Devhack Admin</p>
-                <p className="text-xs text-muted-foreground">{username}</p>
+                <p className="text-xs text-muted-foreground">{username ?? "Admin"}</p>
               </div>
             </div>
             <Button

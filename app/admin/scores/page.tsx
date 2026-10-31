@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Trophy } from "lucide-react";
 
 import {
   EmptyState,
@@ -60,6 +61,9 @@ export default function ScoresPage() {
   const [noteValue, setNoteValue] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
 
+  const [confirmTop10Open, setConfirmTop10Open] = useState(false);
+  const [settingTop10, setSettingTop10] = useState(false);
+
   const loadRounds = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -96,15 +100,20 @@ export default function ScoresPage() {
   }, []);
 
   useEffect(() => {
-    void loadRounds();
+    const timeoutId = window.setTimeout(() => {
+      void loadRounds();
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
   }, [loadRounds]);
 
   useEffect(() => {
-    if (roundId) {
+    if (!roundId) return;
+    const timeoutId = window.setTimeout(() => {
       setTeamFilter("ALL");
       setJudgeFilter("ALL");
       void loadScores(roundId);
-    }
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
   }, [roundId, loadScores]);
 
   const teamOptions = useMemo(
@@ -173,6 +182,29 @@ export default function ScoresPage() {
       setPending(false);
     }
   }
+
+  const top10Candidates = useMemo(() => {
+    if (!results?.results) return [];
+    return results.results.slice(0, 10);
+  }, [results]);
+
+  const handlePromoteTop10 = async () => {
+    if (top10Candidates.length === 0) return;
+    setSettingTop10(true);
+    try {
+      const teamIds = top10Candidates.map((r) => r.teamId);
+      const res = await adminApi.setTop10Teams(teamIds);
+      setSuccess(
+        res.message ||
+          `${teamIds.length} team(s) marked as top 10 finalists for final round judging.`,
+      );
+      setConfirmTop10Open(false);
+    } catch (err) {
+      setError(getErrorMessage(err, "Failed to set top 10 teams."));
+    } finally {
+      setSettingTop10(false);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -248,10 +280,22 @@ export default function ScoresPage() {
               />
             ) : (
               <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Rankings use the backend total of per-criterion averages for{" "}
-                  {results.round.name}.
-                </p>
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm text-muted-foreground">
+                    Rankings use the backend total of per-criterion averages for{" "}
+                    {results.round.name}.
+                  </p>
+                  {results.results.length > 0 && (
+                    <Button
+                      onClick={() => setConfirmTop10Open(true)}
+                      size="sm"
+                      className="bg-amber-600 hover:bg-amber-700 text-white font-medium self-start sm:self-auto"
+                    >
+                      <Trophy className="mr-1.5 size-4" />
+                      Set Top {Math.min(10, results.results.length)} as Finalists
+                    </Button>
+                  )}
+                </div>
                 {results.results.map((result, index) => (
                   <Card key={result.teamId}>
                     <CardHeader className="flex flex-row items-center justify-between">
@@ -440,6 +484,51 @@ export default function ScoresPage() {
             </Button>
             <Button disabled={pending} onClick={() => void saveNote()} type="button">
               {pending ? "Saving…" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog onOpenChange={setConfirmTop10Open} open={confirmTop10Open}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="flex items-center gap-2">
+              <Trophy className="size-5 text-amber-500" />
+              <DialogTitle>Set Top 10 Finalists</DialogTitle>
+            </div>
+            <DialogDescription>
+              Mark the top ranked teams from {results?.round.name} as official Top 10 finalists for the next round of judging.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2 py-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              Leaderboard Finalists ({top10Candidates.length}):
+            </p>
+            <div className="max-h-56 overflow-y-auto rounded-xl border border-border divide-y divide-border/60 bg-muted/20">
+              {top10Candidates.map((c, i) => (
+                <div key={c.teamId} className="flex items-center justify-between px-3 py-2 text-xs">
+                  <span className="font-medium">
+                    #{i + 1} {c.teamName}
+                  </span>
+                  <Badge variant="secondary" className="font-mono text-[10px]">
+                    Avg {c.totalAvgScore}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <DialogFooter className="pt-2">
+            <Button onClick={() => setConfirmTop10Open(false)} type="button" variant="outline">
+              Cancel
+            </Button>
+            <Button
+              disabled={settingTop10}
+              onClick={handlePromoteTop10}
+              className="bg-amber-600 hover:bg-amber-700 text-white"
+            >
+              {settingTop10 ? "Promoting…" : `Confirm Top ${top10Candidates.length} Finalists`}
             </Button>
           </DialogFooter>
         </DialogContent>

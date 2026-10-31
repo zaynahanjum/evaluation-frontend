@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import {
@@ -89,7 +91,10 @@ export default function RoundsPage() {
   }, []);
 
   useEffect(() => {
-    void loadRounds();
+    const timeoutId = window.setTimeout(() => {
+      void loadRounds();
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
   }, [loadRounds]);
 
   async function loadCriteria(round: RoundSummary) {
@@ -241,13 +246,22 @@ export default function RoundsPage() {
                 <TableHead>Status</TableHead>
                 <TableHead>Panels</TableHead>
                 <TableHead>Criteria</TableHead>
+                <TableHead>Evaluations</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rounds.map((round) => (
                 <TableRow key={round.id}>
-                  <TableCell className="font-medium">{round.name}</TableCell>
+                  <TableCell className="font-semibold">
+                    <Link
+                      href={`/admin/rounds/${round.id}`}
+                      className="hover:underline text-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5"
+                    >
+                      <span>{round.name}</span>
+                      <ExternalLink className="size-3 text-muted-foreground" />
+                    </Link>
+                  </TableCell>
                   <TableCell>{round.roundNumber}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">{round.type}</Badge>
@@ -257,6 +271,7 @@ export default function RoundsPage() {
                   </TableCell>
                   <TableCell>{round._count?.panels ?? 0}</TableCell>
                   <TableCell>{round._count?.criteria ?? 0}</TableCell>
+                  <TableCell>{round._count?.evaluations ?? 0}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-2">
                       <Button
