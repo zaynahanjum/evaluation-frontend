@@ -289,7 +289,6 @@ export default function TeamsPage() {
             </Button>
           </div>
         }
-        description="Register teams, manage participants, room assignments, and finalist qualifications."
         title="Teams & Participants"
       />
 
@@ -642,47 +641,48 @@ export default function TeamsPage() {
                   const isSelected = selectedTop10Ids.includes(team.id);
                   const isMaxReached = selectedTop10Ids.length >= 10 && !isSelected;
 
-                  return (
-                    <div
-                      key={team.id}
-                      onClick={() => !isMaxReached && toggleTeamSelection(team.id)}
-                      className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors cursor-pointer ${
-                        isSelected
-                          ? "bg-amber-500/10 border border-amber-500/30 dark:bg-amber-500/15"
-                          : isMaxReached
-                          ? "opacity-40 cursor-not-allowed"
-                          : "hover:bg-accent/60"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Checkbox
-                          checked={isSelected}
-                          disabled={isMaxReached}
-                          id={`team-${team.id}`}
-                          onCheckedChange={() => toggleTeamSelection(team.id)}
-                        />
-                        <Label
-                          className="cursor-pointer font-medium text-xs leading-none"
-                          htmlFor={`team-${team.id}`}
-                        >
-                          {team.name}
-                          <span className="ml-1.5 font-mono text-[11px] text-muted-foreground font-normal">
-                            @{team.username}
-                          </span>
-                        </Label>
-                      </div>
+return (
+  <div
+    key={team.id}
+    onClick={() => {
+      if (isMaxReached) return;
+      toggleTeamSelection(team.id);
+    }}
+    className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors ${
+      isSelected
+        ? "bg-amber-500/10 border border-amber-500/30 dark:bg-amber-500/15"
+        : isMaxReached
+        ? "opacity-40 cursor-not-allowed"
+        : "hover:bg-accent/60 cursor-pointer"
+    }`}
+  >
+    <div className="flex items-center gap-2.5 pointer-events-none">
+      <Checkbox
+        checked={isSelected}
+        disabled={isMaxReached}
+        id={`team-${team.id}`}
+      />
 
-                      <div className="flex items-center gap-1.5">
-                        {team.isTopTen ? (
-                          <Badge className="text-[10px] h-4.5 px-1.5 bg-amber-500/10 text-amber-700 dark:text-amber-300" variant="outline">
-                            Current Finalist
-                          </Badge>
-                        ) : null}
-                        {isSelected && (
-                          <Check className="size-3.5 text-amber-600 dark:text-amber-400" />
-                        )}
-                      </div>
-                    </div>
+      <div className="font-medium text-xs leading-none">
+        {team.name}
+        <span className="ml-1.5 font-mono text-[11px] text-muted-foreground font-normal">
+          @{team.username}
+        </span>
+      </div>
+    </div>
+
+    <div className="flex items-center gap-1.5 pointer-events-none">
+      {team.isTopTen && (
+        <Badge className="text-[10px] h-4.5 px-1.5 bg-amber-500/10 text-amber-700 dark:text-amber-300" variant="outline">
+          Current Finalist
+        </Badge>
+      )}
+
+      {isSelected && (
+        <Check className="size-3.5 text-amber-600 dark:text-amber-400" />
+      )}
+    </div>
+  </div>
                   );
                 })
               )}

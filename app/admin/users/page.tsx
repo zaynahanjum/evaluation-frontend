@@ -216,7 +216,6 @@ export default function UsersPage() {
     <div className="space-y-4">
       <PageHeader
         actions={<Button onClick={openCreate}>Add mentor or judge</Button>}
-        description="Accounts are loaded from GET /admin/users. Role can be MENTOR or JUDGE. Role cannot be changed after creation."
         title="Mentors & judges"
       />
 

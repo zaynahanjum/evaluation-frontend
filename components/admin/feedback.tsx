@@ -6,7 +6,7 @@ export function PageHeader({
   actions,
 }: {
   title: string;
-  description: string;
+  description?: string;
   actions?: React.ReactNode;
 }) {
   return (

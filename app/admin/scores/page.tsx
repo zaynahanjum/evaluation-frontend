@@ -209,7 +209,6 @@ export default function ScoresPage() {
   return (
     <div className="space-y-4">
       <PageHeader
-        description="Individual scores come from GET /admin/rounds/:roundId/scores. Rankings and criterion averages come from GET /admin/rounds/:roundId/results, which averages each criterion across evaluators and then sums those averages. Admin score edits use PATCH /admin/scores/:scoreId."
         title="Scores & results"
       />
 

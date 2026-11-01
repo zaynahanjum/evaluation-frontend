@@ -67,7 +67,6 @@ export default function AdminDashboardPage() {
   return (
     <div>
       <PageHeader
-        description="Overview from GET /admin/dashboard. Use the modules in the sidebar to manage evaluators, rounds, panels, and scores."
         title="Admin dashboard"
       />
       {error ? <ErrorBanner message={error} /> : null}

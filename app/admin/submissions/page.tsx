@@ -179,7 +179,6 @@ export default function SubmissionsPage() {
             )}
           </Button>
         }
-        description="Inspect submitted problem statements, solutions, repository links, and manage final submission lock."
         title="Project Submissions"
       />
 
@@ -261,25 +260,6 @@ export default function SubmissionsPage() {
             value={search}
           />
         </div>
-
-        <form onSubmit={handleDirectLookup} className="flex items-center gap-2 w-full sm:w-auto">
-          <Input
-            className="h-9 w-full sm:w-64 font-mono text-xs"
-            onChange={(e) => setLookupTeamId(e.target.value)}
-            placeholder="Lookup by team_id…"
-            value={lookupTeamId}
-          />
-          <Button
-            type="submit"
-            size="sm"
-            variant="secondary"
-            disabled={lookingUp || !lookupTeamId.trim()}
-            className="h-9 whitespace-nowrap text-xs font-medium"
-          >
-            {lookingUp ? <RefreshCw className="size-3.5 mr-1.5 animate-spin" /> : null}
-            Fetch Submission
-          </Button>
-        </form>
       </div>
 
       {lookupError ? <ErrorBanner message={lookupError} /> : null}

@@ -253,7 +253,6 @@ export default function TimelinePage() {
             Add Event
           </Button>
         }
-        description="Schedule milestones, presentations, and announcements for teams and administrators."
         title="Hackathon Timeline"
       />
 

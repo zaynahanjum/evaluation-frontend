@@ -220,7 +220,6 @@ export default function PanelsPage() {
             Create panel
           </Button>
         }
-        description="Panels belong to a round. Assign mentors or judges and teams using the real panel endpoints. Duplicate member assignments are blocked."
         title="Panels"
       />
 
@@ -249,8 +248,7 @@ export default function PanelsPage() {
       {selectedRound ? (
         <p className="text-sm text-muted-foreground">
           Suggested evaluator role for this round type:{" "}
-          {selectedRound.type === "JUDGING" ? "JUDGE" : "MENTOR"}. The API accepts
-          either MENTOR or JUDGE on any panel.
+          {selectedRound.type === "JUDGING" ? "JUDGE" : "MENTOR"}.
         </p>
       ) : null}
 

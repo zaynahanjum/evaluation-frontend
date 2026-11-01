@@ -220,7 +220,6 @@ export default function RoundsPage() {
     <div className="space-y-4">
       <PageHeader
         actions={<Button onClick={() => setCreateOpen(true)}>Create round</Button>}
-        description="Rounds are loaded from GET /admin/rounds. There is no update-round endpoint, so name and type cannot be edited after creation. Criteria are managed per round."
         title="Rounds"
       />
 
@@ -318,10 +317,6 @@ export default function RoundsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Create round</DialogTitle>
-            <DialogDescription>
-              Required fields: name, type (MENTORING or JUDGING), and a positive round
-              number. New rounds start as PENDING.
-            </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-2">
@@ -380,10 +375,6 @@ export default function RoundsPage() {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Criteria for {criteriaRound?.name}</DialogTitle>
-            <DialogDescription>
-              Each criterion has its own max score. Rankings later use the backend
-              average-per-criterion formula, not equal weights unless max scores match.
-            </DialogDescription>
           </DialogHeader>
           {criteriaLoading ? <TableSkeleton rows={3} /> : null}
           {formError ? <ErrorBanner message={formError} /> : null}
