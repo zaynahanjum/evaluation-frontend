@@ -212,7 +212,9 @@ export default function TimelinePage() {
       const nextVisible = !event.visibleToTeams;
       await adminApi.updateTimeline(event.id, { visibleToTeams: nextVisible });
       setEvents((prev) =>
-        prev.map((e) => (e.id === event.id ? { ...e, visibleToTeams: nextVisible } : e)),
+        prev.map((e) =>
+          e.id === event.id ? { ...e, visibleToTeams: nextVisible } : e,
+        ),
       );
       setSuccess(
         `Event "${event.title}" is now ${nextVisible ? "visible to teams" : "hidden (admin only)"}.`,
@@ -240,8 +242,12 @@ export default function TimelinePage() {
   }, [events, filter, search]);
 
   const now = new Date().getTime();
-  const upcomingCount = events.filter((e) => new Date(e.scheduledAt).getTime() >= now).length;
-  const pastCount = events.filter((e) => new Date(e.scheduledAt).getTime() < now).length;
+  const upcomingCount = events.filter(
+    (e) => new Date(e.scheduledAt).getTime() >= now,
+  ).length;
+  const pastCount = events.filter(
+    (e) => new Date(e.scheduledAt).getTime() < now,
+  ).length;
   const publicCount = events.filter((e) => e.visibleToTeams).length;
 
   return (
@@ -326,7 +332,9 @@ export default function TimelinePage() {
                 {/* Visual timeline dot indicator on sm screens */}
                 <div
                   className={`absolute left-3.5 top-5 hidden size-3 -translate-x-1/2 rounded-full border-2 bg-background sm:block ${
-                    isPast ? "border-muted-foreground/50 bg-muted" : "border-primary bg-primary"
+                    isPast
+                      ? "border-muted-foreground/50 bg-muted"
+                      : "border-primary bg-primary"
                   }`}
                 />
 
@@ -344,7 +352,9 @@ export default function TimelinePage() {
                           </h3>
                           {event.visibleToTeams ? (
                             <Badge
-                              onClick={() => void handleQuickToggleVisibility(event)}
+                              onClick={() =>
+                                void handleQuickToggleVisibility(event)
+                              }
                               className="bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400 cursor-pointer select-none transition-colors"
                               variant="outline"
                               title="Click to hide from teams (make Admin Only)"
@@ -354,7 +364,9 @@ export default function TimelinePage() {
                             </Badge>
                           ) : (
                             <Badge
-                              onClick={() => void handleQuickToggleVisibility(event)}
+                              onClick={() =>
+                                void handleQuickToggleVisibility(event)
+                              }
                               variant="secondary"
                               className="cursor-pointer select-none hover:bg-muted-foreground/20 transition-colors"
                               title="Click to publish to teams (make Public)"
@@ -364,7 +376,10 @@ export default function TimelinePage() {
                             </Badge>
                           )}
                           {isPast && (
-                            <Badge variant="outline" className="text-muted-foreground">
+                            <Badge
+                              variant="outline"
+                              className="text-muted-foreground"
+                            >
                               Past
                             </Badge>
                           )}
@@ -466,7 +481,9 @@ export default function TimelinePage() {
               <Checkbox
                 checked={visibleToTeams}
                 id="event-visible"
-                onCheckedChange={(checked) => setVisibleToTeams(Boolean(checked))}
+                onCheckedChange={(checked) =>
+                  setVisibleToTeams(Boolean(checked))
+                }
               />
               <Label
                 className="text-sm font-normal cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -485,7 +502,11 @@ export default function TimelinePage() {
                 Cancel
               </Button>
               <Button disabled={submitting} type="submit">
-                {submitting ? "Saving…" : editingEvent ? "Save Changes" : "Create Event"}
+                {submitting
+                  ? "Saving…"
+                  : editingEvent
+                    ? "Save Changes"
+                    : "Create Event"}
               </Button>
             </DialogFooter>
           </form>

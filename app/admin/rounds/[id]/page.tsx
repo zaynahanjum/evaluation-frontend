@@ -55,9 +55,19 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { adminApi } from "@/lib/admin/data-source";
-import { validateCriterionName, validateMaxScore, validateNote } from "@/lib/admin/validation";
+import {
+  validateCriterionName,
+  validateMaxScore,
+  validateNote,
+} from "@/lib/admin/validation";
 import { getErrorMessage } from "@/lib/api/errors";
-import type { Criterion, EvaluationRecord, RoundDetail, RoundSummary, ScoreItem } from "@/lib/api/types";
+import type {
+  Criterion,
+  EvaluationRecord,
+  RoundDetail,
+  RoundSummary,
+  ScoreItem,
+} from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 
 function statusVariant(status: RoundSummary["status"]) {
@@ -78,12 +88,16 @@ export default function RoundDetailPage() {
   const [success, setSuccess] = useState<string | null>(null);
 
   // Round actions
-  const [confirmAction, setConfirmAction] = useState<"start" | "end" | "delete" | null>(null);
+  const [confirmAction, setConfirmAction] = useState<
+    "start" | "end" | "delete" | null
+  >(null);
   const [actionPending, setActionPending] = useState(false);
 
   // Criteria Modal State
   const [criterionOpen, setCriterionOpen] = useState(false);
-  const [editingCriterion, setEditingCriterion] = useState<Criterion | null>(null);
+  const [editingCriterion, setEditingCriterion] = useState<Criterion | null>(
+    null,
+  );
   const [criterionName, setCriterionName] = useState("");
   const [criterionDescription, setCriterionDescription] = useState("");
   const [criterionMax, setCriterionMax] = useState("10");
@@ -91,7 +105,9 @@ export default function RoundDetailPage() {
   const [savingCriterion, setSavingCriterion] = useState(false);
 
   // Delete Criterion State
-  const [deleteCriterion, setDeleteCriterion] = useState<Criterion | null>(null);
+  const [deleteCriterion, setDeleteCriterion] = useState<Criterion | null>(
+    null,
+  );
   const [deletingCriterion, setDeletingCriterion] = useState(false);
 
   // Score & Note Override State
@@ -236,7 +252,9 @@ export default function RoundDetailPage() {
       return;
     }
     if (val < 0 || val > editingScore.criterion.maxScore) {
-      setOverrideError(`Score must be between 0 and ${editingScore.criterion.maxScore}.`);
+      setOverrideError(
+        `Score must be between 0 and ${editingScore.criterion.maxScore}.`,
+      );
       return;
     }
 
@@ -271,7 +289,9 @@ export default function RoundDetailPage() {
       setEditingNote(null);
       await loadRound();
     } catch (err) {
-      setOverrideError(getErrorMessage(err, "Failed to update evaluation note."));
+      setOverrideError(
+        getErrorMessage(err, "Failed to update evaluation note."),
+      );
     } finally {
       setSavingOverride(false);
     }
@@ -308,10 +328,16 @@ export default function RoundDetailPage() {
         <Card className="border-destructive/30">
           <CardHeader>
             <CardTitle className="text-destructive">Round not found</CardTitle>
-            <CardDescription>{error ?? "The requested evaluation round could not be loaded."}</CardDescription>
+            <CardDescription>
+              {error ?? "The requested evaluation round could not be loaded."}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => void loadRound()} variant="outline" className="rounded-xl">
+            <Button
+              onClick={() => void loadRound()}
+              variant="outline"
+              className="rounded-xl"
+            >
               <RefreshCw className="size-4" aria-hidden="true" />
               Retry
             </Button>
@@ -388,7 +414,10 @@ export default function RoundDetailPage() {
             onClick={() => void loadRound()}
             disabled={loading}
           >
-            <RefreshCw className={cn("size-3.5", loading && "animate-spin")} aria-hidden="true" />
+            <RefreshCw
+              className={cn("size-3.5", loading && "animate-spin")}
+              aria-hidden="true"
+            />
             <span>Refresh</span>
           </Button>
         </div>
@@ -408,20 +437,28 @@ export default function RoundDetailPage() {
               <Badge variant="secondary" className="font-medium">
                 Round #{round.roundNumber} • {round.type}
               </Badge>
-              <Badge variant={statusVariant(round.status)}>{round.status}</Badge>
+              <Badge variant={statusVariant(round.status)}>
+                {round.status}
+              </Badge>
             </div>
-            <p className="font-mono text-xs text-muted-foreground">ID: {round.id}</p>
+            <p className="font-mono text-xs text-muted-foreground">
+              ID: {round.id}
+            </p>
           </div>
 
           <div className="flex flex-col gap-1 text-xs text-muted-foreground sm:text-right">
             <div className="flex items-center gap-1.5 sm:justify-end">
               <Calendar className="size-3.5 text-primary" />
-              <span>Created: {new Date(round.createdAt).toLocaleDateString()}</span>
+              <span>
+                Created: {new Date(round.createdAt).toLocaleDateString()}
+              </span>
             </div>
             {round.startedAt && (
               <div className="flex items-center gap-1.5 sm:justify-end">
                 <Clock className="size-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Started: {new Date(round.startedAt).toLocaleString()}</span>
+                <span>
+                  Started: {new Date(round.startedAt).toLocaleString()}
+                </span>
               </div>
             )}
             {round.endedAt && (
@@ -441,7 +478,9 @@ export default function RoundDetailPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider">
               Scoring Criteria
             </CardDescription>
-            <CardTitle className="text-2xl font-bold">{round.criteria.length}</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              {round.criteria.length}
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-muted-foreground">
             Rubric metrics used to evaluate participating teams
@@ -453,7 +492,9 @@ export default function RoundDetailPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider">
               Assigned Panels
             </CardDescription>
-            <CardTitle className="text-2xl font-bold">{round.panels.length}</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              {round.panels.length}
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-muted-foreground">
             Evaluator groups reviewing teams for this round
@@ -465,7 +506,9 @@ export default function RoundDetailPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider">
               Submitted Evaluations
             </CardDescription>
-            <CardTitle className="text-2xl font-bold">{round._count.evaluations}</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              {round._count.evaluations}
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-muted-foreground">
             Total completed team scoring sessions
@@ -482,10 +525,15 @@ export default function RoundDetailPage() {
               Scoring Criteria ({round.criteria.length})
             </CardTitle>
             <CardDescription>
-              Evaluation rubric questions and maximum scores configured for this round.
+              Evaluation rubric questions and maximum scores configured for this
+              round.
             </CardDescription>
           </div>
-          <Button onClick={openAddCriterion} size="sm" className="self-start sm:self-auto">
+          <Button
+            onClick={openAddCriterion}
+            size="sm"
+            className="self-start sm:self-auto"
+          >
             <Plus className="size-4 mr-1.5" />
             Add Criterion
           </Button>
@@ -493,7 +541,8 @@ export default function RoundDetailPage() {
         <CardContent className="p-0">
           {round.criteria.length === 0 ? (
             <div className="p-6 text-center text-xs text-muted-foreground">
-              No scoring criteria defined yet. Click &quot;Add Criterion&quot; to establish the rubric.
+              No scoring criteria defined yet. Click &quot;Add Criterion&quot;
+              to establish the rubric.
             </div>
           ) : (
             <Table>
@@ -508,12 +557,16 @@ export default function RoundDetailPage() {
               <TableBody>
                 {round.criteria.map((c) => (
                   <TableRow key={c.id}>
-                    <TableCell className="font-medium text-sm">{c.name}</TableCell>
+                    <TableCell className="font-medium text-sm">
+                      {c.name}
+                    </TableCell>
                     <TableCell className="text-xs text-muted-foreground max-w-md">
                       {c.description ? (
                         <span className="line-clamp-2">{c.description}</span>
                       ) : (
-                        <span className="italic text-muted-foreground/60">—</span>
+                        <span className="italic text-muted-foreground/60">
+                          —
+                        </span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -578,7 +631,8 @@ export default function RoundDetailPage() {
         <CardContent>
           {round.panels.length === 0 ? (
             <div className="py-6 text-center text-xs text-muted-foreground">
-              No panels created for this round yet. Visit the Panels page to create one.
+              No panels created for this round yet. Visit the Panels page to
+              create one.
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
@@ -590,14 +644,17 @@ export default function RoundDetailPage() {
                   <div className="flex items-center justify-between">
                     <h3 className="font-semibold text-sm">{panel.name}</h3>
                     <Badge variant="outline" className="text-[10px]">
-                      {panel.members.length} members • {panel.teams.length} teams
+                      {panel.members.length} members • {panel.teams.length}{" "}
+                      teams
                     </Badge>
                   </div>
 
                   <div className="space-y-1.5 text-xs">
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                       <Users className="size-3.5 text-primary" />
-                      <span className="font-medium text-foreground">Evaluators:</span>
+                      <span className="font-medium text-foreground">
+                        Evaluators:
+                      </span>
                     </div>
                     {panel.members.length === 0 ? (
                       <p className="text-[11px] text-muted-foreground italic pl-5">
@@ -606,7 +663,11 @@ export default function RoundDetailPage() {
                     ) : (
                       <div className="flex flex-wrap gap-1.5 pl-5">
                         {panel.members.map((m) => (
-                          <Badge key={m.id} variant="secondary" className="text-[11px] font-normal">
+                          <Badge
+                            key={m.id}
+                            variant="secondary"
+                            className="text-[11px] font-normal"
+                          >
                             {m.user.username} ({m.user.role})
                           </Badge>
                         ))}
@@ -617,7 +678,9 @@ export default function RoundDetailPage() {
                   <div className="space-y-1.5 text-xs pt-1 border-t border-border/60">
                     <div className="flex items-center gap-1.5 text-muted-foreground">
                       <UsersRound className="size-3.5 text-primary" />
-                      <span className="font-medium text-foreground">Assigned Teams:</span>
+                      <span className="font-medium text-foreground">
+                        Assigned Teams:
+                      </span>
                     </div>
                     {panel.teams.length === 0 ? (
                       <p className="text-[11px] text-muted-foreground italic pl-5">
@@ -626,7 +689,11 @@ export default function RoundDetailPage() {
                     ) : (
                       <div className="flex flex-wrap gap-1.5 pl-5">
                         {panel.teams.map((t) => (
-                          <Badge key={t.id} variant="outline" className="text-[11px] font-normal">
+                          <Badge
+                            key={t.id}
+                            variant="outline"
+                            className="text-[11px] font-normal"
+                          >
                             {t.team.name}
                           </Badge>
                         ))}
@@ -671,8 +738,14 @@ export default function RoundDetailPage() {
           ) : (
             <div className="space-y-3">
               {evaluations.map((ev) => {
-                const totalScore = ev.scores.reduce((sum, s) => sum + s.value, 0);
-                const maxPossible = ev.scores.reduce((sum, s) => sum + s.criterion.maxScore, 0);
+                const totalScore = ev.scores.reduce(
+                  (sum, s) => sum + s.value,
+                  0,
+                );
+                const maxPossible = ev.scores.reduce(
+                  (sum, s) => sum + s.criterion.maxScore,
+                  0,
+                );
 
                 return (
                   <div
@@ -682,7 +755,9 @@ export default function RoundDetailPage() {
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-sm">{ev.team.name}</h4>
+                          <h4 className="font-semibold text-sm">
+                            {ev.team.name}
+                          </h4>
                           {ev.isConfirmed ? (
                             <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-300 dark:text-emerald-400 text-[10px]">
                               Confirmed
@@ -703,7 +778,10 @@ export default function RoundDetailPage() {
                       </div>
 
                       <div className="flex items-center gap-2 self-start sm:self-auto">
-                        <Badge variant="secondary" className="font-mono text-xs font-semibold">
+                        <Badge
+                          variant="secondary"
+                          className="font-mono text-xs font-semibold"
+                        >
                           Total: {totalScore} / {maxPossible} pts
                         </Badge>
                         <Button
@@ -735,7 +813,9 @@ export default function RoundDetailPage() {
                             key={score.id}
                             className="flex items-center gap-1.5 rounded-md bg-muted/40 px-2 py-1 text-[11px]"
                           >
-                            <span className="text-muted-foreground">{score.criterion.name}:</span>
+                            <span className="text-muted-foreground">
+                              {score.criterion.name}:
+                            </span>
                             <span className="font-mono font-semibold text-foreground">
                               {score.value}/{score.criterion.maxScore}
                             </span>
@@ -773,7 +853,8 @@ export default function RoundDetailPage() {
               {editingCriterion ? "Edit Criterion" : "Add Scoring Criterion"}
             </DialogTitle>
             <DialogDescription>
-              Define the metric and maximum points evaluators will grade against.
+              Define the metric and maximum points evaluators will grade
+              against.
             </DialogDescription>
           </DialogHeader>
 
@@ -824,7 +905,11 @@ export default function RoundDetailPage() {
                 Cancel
               </Button>
               <Button disabled={savingCriterion} type="submit">
-                {savingCriterion ? "Saving…" : editingCriterion ? "Save Changes" : "Add Criterion"}
+                {savingCriterion
+                  ? "Saving…"
+                  : editingCriterion
+                    ? "Save Changes"
+                    : "Add Criterion"}
               </Button>
             </DialogFooter>
           </form>
@@ -852,15 +937,15 @@ export default function RoundDetailPage() {
           confirmAction === "start"
             ? "Start Round"
             : confirmAction === "end"
-            ? "End Round"
-            : "Delete Round"
+              ? "End Round"
+              : "Delete Round"
         }
         description={
           confirmAction === "start"
             ? `Are you ready to activate "${round.name}"? Evaluators will be able to begin submitting scores.`
             : confirmAction === "end"
-            ? `Are you sure you want to end "${round.name}"? Evaluator score submissions will be locked.`
-            : `Permanently delete round "${round.name}"? This will delete all associated criteria, panels, and scores.`
+              ? `Are you sure you want to end "${round.name}"? Evaluator score submissions will be locked.`
+              : `Permanently delete round "${round.name}"? This will delete all associated criteria, panels, and scores.`
         }
         onConfirm={handleRoundAction}
         onOpenChange={(open) => !open && setConfirmAction(null)}
@@ -870,8 +955,8 @@ export default function RoundDetailPage() {
           confirmAction === "start"
             ? "Start Evaluation Round"
             : confirmAction === "end"
-            ? "End Evaluation Round"
-            : "Delete Evaluation Round"
+              ? "End Evaluation Round"
+              : "Delete Evaluation Round"
         }
       />
 

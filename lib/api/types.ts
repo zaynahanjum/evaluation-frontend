@@ -49,7 +49,12 @@ export type StaffUser = {
     panel: {
       id: string;
       name: string;
-      round?: { id: string; name: string; type?: RoundType; status?: RoundStatus };
+      round?: {
+        id: string;
+        name: string;
+        type?: RoundType;
+        status?: RoundStatus;
+      };
     };
   }>;
 };

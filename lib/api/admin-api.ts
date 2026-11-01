@@ -30,13 +30,16 @@ import type {
 } from "@/lib/api/types";
 
 export async function getDashboard() {
-  const payload = await apiRequest<ApiSuccess<DashboardData>>("/admin/dashboard");
+  const payload =
+    await apiRequest<ApiSuccess<DashboardData>>("/admin/dashboard");
   return payload.data;
 }
 
 export async function listUsers(role?: "MENTOR" | "JUDGE") {
   const query = role ? `?role=${role}` : "";
-  const payload = await apiRequest<ApiSuccess<StaffUser[]>>(`/admin/users${query}`);
+  const payload = await apiRequest<ApiSuccess<StaffUser[]>>(
+    `/admin/users${query}`,
+  );
   return payload.data;
 }
 
@@ -49,10 +52,13 @@ export async function createUser(body: CreateUserPayload) {
 }
 
 export async function updateUser(id: string, body: UpdateUserPayload) {
-  const payload = await apiRequest<ApiSuccess<StaffUser>>(`/admin/users/${id}`, {
-    method: "PATCH",
-    body,
-  });
+  const payload = await apiRequest<ApiSuccess<StaffUser>>(
+    `/admin/users/${id}`,
+    {
+      method: "PATCH",
+      body,
+    },
+  );
   return payload.data;
 }
 
@@ -66,7 +72,9 @@ export async function listRounds() {
 }
 
 export async function getRound(roundId: string) {
-  const payload = await apiRequest<ApiSuccess<RoundDetail>>(`/admin/rounds/${roundId}`);
+  const payload = await apiRequest<ApiSuccess<RoundDetail>>(
+    `/admin/rounds/${roundId}`,
+  );
   return payload.data;
 }
 
@@ -95,7 +103,9 @@ export async function endRound(roundId: string) {
 }
 
 export async function deleteRound(roundId: string) {
-  await apiRequest<ApiMessage>(`/admin/rounds/${roundId}`, { method: "DELETE" });
+  await apiRequest<ApiMessage>(`/admin/rounds/${roundId}`, {
+    method: "DELETE",
+  });
 }
 
 export async function listCriteria(roundId: string) {
@@ -105,7 +115,10 @@ export async function listCriteria(roundId: string) {
   return payload.data;
 }
 
-export async function createCriterion(roundId: string, body: CreateCriteriaPayload) {
+export async function createCriterion(
+  roundId: string,
+  body: CreateCriteriaPayload,
+) {
   const payload = await apiRequest<ApiSuccess<Criterion>>(
     `/admin/rounds/${roundId}/criteria`,
     { method: "POST", body },
@@ -114,7 +127,10 @@ export async function createCriterion(roundId: string, body: CreateCriteriaPaylo
 }
 export const createCriteria = createCriterion;
 
-export async function updateCriterion(criterionId: string, body: UpdateCriteriaPayload) {
+export async function updateCriterion(
+  criterionId: string,
+  body: UpdateCriteriaPayload,
+) {
   const payload = await apiRequest<ApiSuccess<Criterion>>(
     `/admin/criteria/${criterionId}`,
     { method: "PATCH", body },
@@ -146,7 +162,9 @@ export async function createPanel(roundId: string, name: string) {
 }
 
 export async function deletePanel(panelId: string) {
-  await apiRequest<ApiMessage>(`/admin/panels/${panelId}`, { method: "DELETE" });
+  await apiRequest<ApiMessage>(`/admin/panels/${panelId}`, {
+    method: "DELETE",
+  });
 }
 
 export async function addPanelMember(panelId: string, userId: string) {
@@ -189,13 +207,20 @@ export async function createTeam(body: CreateTeamPayload) {
 }
 
 export async function getTeam(teamId: string) {
-  const payload = await apiRequest<ApiSuccess<TeamDetail>>(`/admin/teams/${teamId}`);
+  const payload = await apiRequest<ApiSuccess<TeamDetail>>(
+    `/admin/teams/${teamId}`,
+  );
   return payload.data;
 }
 
 export async function updateTeam(teamId: string, body: UpdateTeamPayload) {
   const payload = await apiRequest<
-    ApiSuccess<{ id: string; name: string; username: string; isActive: boolean }>
+    ApiSuccess<{
+      id: string;
+      name: string;
+      username: string;
+      isActive: boolean;
+    }>
   >(`/admin/teams/${teamId}`, {
     method: "PATCH",
     body,
@@ -263,15 +288,19 @@ export async function getRoundResults(roundId: string) {
 }
 
 export async function listTimeline() {
-  const payload = await apiRequest<ApiSuccess<TimelineEvent[]>>("/admin/timeline");
+  const payload =
+    await apiRequest<ApiSuccess<TimelineEvent[]>>("/admin/timeline");
   return payload.data;
 }
 
 export async function createTimeline(body: CreateTimelinePayload) {
-  const payload = await apiRequest<ApiSuccess<TimelineEvent>>("/admin/timeline", {
-    method: "POST",
-    body,
-  });
+  const payload = await apiRequest<ApiSuccess<TimelineEvent>>(
+    "/admin/timeline",
+    {
+      method: "POST",
+      body,
+    },
+  );
   return payload.data;
 }
 
@@ -288,7 +317,8 @@ export async function deleteTimeline(id: string) {
 }
 
 export async function listSubmissions() {
-  const payload = await apiRequest<ApiSuccess<SubmissionsPayload>>("/admin/submissions");
+  const payload =
+    await apiRequest<ApiSuccess<SubmissionsPayload>>("/admin/submissions");
   return payload.data;
 }
 

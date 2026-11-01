@@ -48,8 +48,9 @@ async function tryRefreshAccessToken(): Promise<boolean> {
     return false;
   }
 
-  const data = (payload as { data?: { accessToken?: string; refreshToken?: string } })
-    ?.data;
+  const data = (
+    payload as { data?: { accessToken?: string; refreshToken?: string } }
+  )?.data;
   if (!data?.accessToken || !data.refreshToken) {
     clearAdminSession();
     return false;
@@ -122,7 +123,12 @@ export async function loginRequest(username: string, password: string) {
       accessToken: string;
       refreshToken: string;
       role: "ADMIN" | "MENTOR" | "JUDGE" | "TEAM";
-      user?: { id: string; username: string; role: string; mustChangePassword: boolean };
+      user?: {
+        id: string;
+        username: string;
+        role: string;
+        mustChangePassword: boolean;
+      };
       team?: { username: string };
     };
   }>("/auth/login", {

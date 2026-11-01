@@ -81,7 +81,9 @@ export default function UsersPage() {
   }, [roleFilter]);
 
   useEffect(() => {
-    void loadUsers();
+    void (async () => {
+      await loadUsers();
+    })();
   }, [loadUsers]);
 
   const visibleUsers = useMemo(() => {
@@ -125,7 +127,9 @@ export default function UsersPage() {
       const usernameError = validateUsername(username);
       const passwordError = validatePassword(password, true);
       if (usernameError || passwordError || !validateRole(role)) {
-        setFormError(usernameError ?? passwordError ?? "Role must be MENTOR or JUDGE.");
+        setFormError(
+          usernameError ?? passwordError ?? "Role must be MENTOR or JUDGE.",
+        );
         return;
       }
       setPending(true);
@@ -135,7 +139,9 @@ export default function UsersPage() {
           password,
           role,
         });
-        setSuccess(`${role === "MENTOR" ? "Mentor" : "Judge"} account created.`);
+        setSuccess(
+          `${role === "MENTOR" ? "Mentor" : "Judge"} account created.`,
+        );
         setFormOpen(false);
         await loadUsers();
       } catch (err) {
@@ -179,7 +185,9 @@ export default function UsersPage() {
         password,
         mustChangePassword: true,
       });
-      setSuccess("Password reset. The user must change it on next login if required.");
+      setSuccess(
+        "Password reset. The user must change it on next login if required.",
+      );
       setFormOpen(false);
       await loadUsers();
     } catch (err) {
@@ -205,7 +213,9 @@ export default function UsersPage() {
       setConfirm(null);
       await loadUsers();
     } catch (err) {
-      setError(getErrorMessage(err, "The account action could not be completed."));
+      setError(
+        getErrorMessage(err, "The account action could not be completed."),
+      );
       setConfirm(null);
     } finally {
       setPending(false);
@@ -235,7 +245,11 @@ export default function UsersPage() {
           <option value="MENTOR">Mentors</option>
           <option value="JUDGE">Judges</option>
         </select>
-        <Button onClick={() => void loadUsers()} type="button" variant="outline">
+        <Button
+          onClick={() => void loadUsers()}
+          type="button"
+          variant="outline"
+        >
           Refresh
         </Button>
       </div>
@@ -269,7 +283,9 @@ export default function UsersPage() {
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.username}</TableCell>
                   <TableCell>
-                    <Badge variant={user.role === "JUDGE" ? "default" : "secondary"}>
+                    <Badge
+                      variant={user.role === "JUDGE" ? "default" : "secondary"}
+                    >
                       {user.role}
                     </Badge>
                   </TableCell>
@@ -290,10 +306,18 @@ export default function UsersPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-2">
-                      <Button onClick={() => openEdit(user)} size="sm" variant="outline">
+                      <Button
+                        onClick={() => openEdit(user)}
+                        size="sm"
+                        variant="outline"
+                      >
                         Edit
                       </Button>
-                      <Button onClick={() => openPassword(user)} size="sm" variant="outline">
+                      <Button
+                        onClick={() => openPassword(user)}
+                        size="sm"
+                        variant="outline"
+                      >
                         Reset password
                       </Button>
                       <Button
@@ -370,7 +394,9 @@ export default function UsersPage() {
                 <select
                   className="h-9 w-full rounded-4xl border border-input bg-input/30 px-3 text-sm"
                   id="user-role"
-                  onChange={(event) => setRole(event.target.value as EvaluatorRole)}
+                  onChange={(event) =>
+                    setRole(event.target.value as EvaluatorRole)
+                  }
                   value={role}
                 >
                   <option value="MENTOR">MENTOR</option>
@@ -381,10 +407,18 @@ export default function UsersPage() {
             {formError ? <ErrorBanner message={formError} /> : null}
           </div>
           <DialogFooter>
-            <Button onClick={() => setFormOpen(false)} type="button" variant="outline">
+            <Button
+              onClick={() => setFormOpen(false)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button disabled={pending} onClick={() => void submitForm()} type="button">
+            <Button
+              disabled={pending}
+              onClick={() => void submitForm()}
+              type="button"
+            >
               {pending ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>

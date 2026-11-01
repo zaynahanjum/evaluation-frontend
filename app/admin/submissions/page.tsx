@@ -50,7 +50,10 @@ import {
 } from "@/components/ui/table";
 import { adminApi } from "@/lib/admin/data-source";
 import { getErrorMessage } from "@/lib/api/errors";
-import type { AdminSubmissionRecord, SubmissionsPayload } from "@/lib/api/types";
+import type {
+  AdminSubmissionRecord,
+  SubmissionsPayload,
+} from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 
 export default function SubmissionsPage() {
@@ -62,11 +65,9 @@ export default function SubmissionsPage() {
   const [search, setSearch] = useState("");
 
   // Detailed View Modal & Dynamic GET /admin/submissions/:teamId
-  const [viewSubmission, setViewSubmission] = useState<AdminSubmissionRecord | null>(null);
+  const [viewSubmission, setViewSubmission] =
+    useState<AdminSubmissionRecord | null>(null);
   const [loadingTeamId, setLoadingTeamId] = useState<string | null>(null);
-  const [lookupTeamId, setLookupTeamId] = useState("");
-  const [lookingUp, setLookingUp] = useState(false);
-  const [lookupError, setLookupError] = useState<string | null>(null);
 
   const handleOpenSubmission = async (teamId: string) => {
     setLoadingTeamId(teamId);
@@ -78,23 +79,6 @@ export default function SubmissionsPage() {
       setError(getErrorMessage(err, "Failed to load team submission."));
     } finally {
       setLoadingTeamId(null);
-    }
-  };
-
-  const handleDirectLookup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const id = lookupTeamId.trim();
-    if (!id) return;
-    setLookingUp(true);
-    setLookupError(null);
-    try {
-      const record = await adminApi.getTeamSubmission(id);
-      setViewSubmission(record);
-      setLookupTeamId("");
-    } catch (err) {
-      setLookupError(getErrorMessage(err, `No submission found for team ID "${id}".`));
-    } finally {
-      setLookingUp(false);
     }
   };
 
@@ -125,10 +109,17 @@ export default function SubmissionsPage() {
     setError(null);
     try {
       const res = await adminApi.setSubmissionLock(nextLocked);
-      setData((prev) => (prev ? { ...prev, submissionLocked: nextLocked } : null));
-      setSuccess(res.message || `Final submissions are now ${nextLocked ? "closed" : "open"}.`);
+      setData((prev) =>
+        prev ? { ...prev, submissionLocked: nextLocked } : null,
+      );
+      setSuccess(
+        res.message ||
+          `Final submissions are now ${nextLocked ? "closed" : "open"}.`,
+      );
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to update submission lock status."));
+      setError(
+        getErrorMessage(err, "Failed to update submission lock status."),
+      );
     } finally {
       setTogglingLock(false);
     }
@@ -241,7 +232,9 @@ export default function SubmissionsPage() {
             <CardDescription className="text-xs font-semibold uppercase tracking-wider">
               Total Submissions
             </CardDescription>
-            <CardTitle className="text-2xl font-bold">{submissionsCount}</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              {submissionsCount}
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-muted-foreground">
             Teams with recorded final deliverables ready for evaluation
@@ -356,8 +349,12 @@ export default function SubmissionsPage() {
                         </a>
                       ) : null}
 
-                      {!sub.githubRepoLink && !sub.deploymentLink && !sub.driveLink ? (
-                        <span className="text-xs text-muted-foreground italic">—</span>
+                      {!sub.githubRepoLink &&
+                      !sub.deploymentLink &&
+                      !sub.driveLink ? (
+                        <span className="text-xs text-muted-foreground italic">
+                          —
+                        </span>
                       ) : null}
                     </div>
                   </TableCell>
@@ -403,7 +400,9 @@ export default function SubmissionsPage() {
             <div className="flex items-center justify-between gap-2 pr-6">
               <div className="flex items-center gap-2">
                 <FileCode2 className="size-5 text-primary" />
-                <DialogTitle>{viewSubmission?.team.name} — Submission</DialogTitle>
+                <DialogTitle>
+                  {viewSubmission?.team.name} — Submission
+                </DialogTitle>
               </div>
             </div>
             <DialogDescription>
@@ -430,7 +429,8 @@ export default function SubmissionsPage() {
                   Problem Statement
                 </h4>
                 <p className="mt-1.5 text-sm text-foreground whitespace-pre-wrap leading-relaxed bg-muted/20 p-3 rounded-xl border border-border/50">
-                  {viewSubmission.problemStatement ?? "No problem statement provided."}
+                  {viewSubmission.problemStatement ??
+                    "No problem statement provided."}
                 </p>
               </div>
 
@@ -503,7 +503,9 @@ export default function SubmissionsPage() {
             {viewSubmission ? (
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => void handleOpenSubmission(viewSubmission.teamId)}
+                  onClick={() =>
+                    void handleOpenSubmission(viewSubmission.teamId)
+                  }
                   disabled={loadingTeamId === viewSubmission.teamId}
                   size="sm"
                   variant="outline"
@@ -522,13 +524,17 @@ export default function SubmissionsPage() {
                   size="sm"
                   className="rounded-xl text-xs"
                   nativeButton={false}
-                  render={<Link href={`/admin/teams/${viewSubmission.teamId}`} />}
+                  render={
+                    <Link href={`/admin/teams/${viewSubmission.teamId}`} />
+                  }
                 >
                   <UsersRound className="size-3 mr-1" />
                   <span>Team Profile</span>
                 </Button>
               </div>
-            ) : <div />}
+            ) : (
+              <div />
+            )}
 
             <Button
               onClick={() => setViewSubmission(null)}

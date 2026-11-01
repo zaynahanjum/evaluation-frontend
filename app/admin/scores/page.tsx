@@ -117,17 +117,17 @@ export default function ScoresPage() {
   }, [roundId, loadScores]);
 
   const teamOptions = useMemo(
-    () =>
-      [...new Map(evaluations.map((item) => [item.team.id, item.team])).values()],
+    () => [
+      ...new Map(evaluations.map((item) => [item.team.id, item.team])).values(),
+    ],
     [evaluations],
   );
   const judgeOptions = useMemo(
-    () =>
-      [
-        ...new Map(
-          evaluations.map((item) => [item.evaluator.id, item.evaluator]),
-        ).values(),
-      ],
+    () => [
+      ...new Map(
+        evaluations.map((item) => [item.evaluator.id, item.evaluator]),
+      ).values(),
+    ],
     [evaluations],
   );
 
@@ -145,7 +145,9 @@ export default function ScoresPage() {
       return;
     }
     if (value < 0 || value > editingScore.criterion.maxScore) {
-      setFormError(`Score must be between 0 and ${editingScore.criterion.maxScore}.`);
+      setFormError(
+        `Score must be between 0 and ${editingScore.criterion.maxScore}.`,
+      );
       return;
     }
     setPending(true);
@@ -208,9 +210,7 @@ export default function ScoresPage() {
 
   return (
     <div className="space-y-4">
-      <PageHeader
-        title="Scores & results"
-      />
+      <PageHeader title="Scores & results" />
 
       <div className="flex flex-col gap-3 lg:flex-row">
         <select
@@ -218,7 +218,9 @@ export default function ScoresPage() {
           onChange={(event) => setRoundId(event.target.value)}
           value={roundId}
         >
-          {rounds.length === 0 ? <option value="">No rounds available</option> : null}
+          {rounds.length === 0 ? (
+            <option value="">No rounds available</option>
+          ) : null}
           {rounds.map((round) => (
             <option key={round.id} value={round.id}>
               {round.name} ({round.type})
@@ -249,7 +251,11 @@ export default function ScoresPage() {
             </option>
           ))}
         </select>
-        <Button onClick={() => void loadScores(roundId)} type="button" variant="outline">
+        <Button
+          onClick={() => void loadScores(roundId)}
+          type="button"
+          variant="outline"
+        >
           Refresh
         </Button>
       </div>
@@ -291,7 +297,8 @@ export default function ScoresPage() {
                       className="bg-amber-600 hover:bg-amber-700 text-white font-medium self-start sm:self-auto"
                     >
                       <Trophy className="mr-1.5 size-4" />
-                      Set Top {Math.min(10, results.results.length)} as Finalists
+                      Set Top {Math.min(10, results.results.length)} as
+                      Finalists
                     </Button>
                   )}
                 </div>
@@ -302,11 +309,14 @@ export default function ScoresPage() {
                         #{index + 1} {result.teamName}
                       </CardTitle>
                       <div className="flex items-center gap-2">
-                        <Badge>
-                          Total avg {result.totalAvgScore}
-                        </Badge>
-                        <Badge variant={result.isConfirmedByAll ? "default" : "outline"}>
-                          {result.confirmedEvaluators}/{result.totalEvaluators} confirmed
+                        <Badge>Total avg {result.totalAvgScore}</Badge>
+                        <Badge
+                          variant={
+                            result.isConfirmedByAll ? "default" : "outline"
+                          }
+                        >
+                          {result.confirmedEvaluators}/{result.totalEvaluators}{" "}
+                          confirmed
                         </Badge>
                       </div>
                     </CardHeader>
@@ -361,7 +371,11 @@ export default function ScoresPage() {
                           </span>
                         </CardTitle>
                         <div className="flex flex-wrap gap-2">
-                          <Badge variant={evaluation.isConfirmed ? "default" : "outline"}>
+                          <Badge
+                            variant={
+                              evaluation.isConfirmed ? "default" : "outline"
+                            }
+                          >
                             {evaluation.isConfirmed ? "Confirmed" : "Draft"}
                           </Badge>
                           <Badge variant="secondary">
@@ -382,9 +396,13 @@ export default function ScoresPage() {
                       </CardHeader>
                       <CardContent className="space-y-3">
                         {evaluation.note ? (
-                          <p className="text-sm text-muted-foreground">{evaluation.note}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {evaluation.note}
+                          </p>
                         ) : (
-                          <p className="text-sm text-muted-foreground">No note.</p>
+                          <p className="text-sm text-muted-foreground">
+                            No note.
+                          </p>
                         )}
                         <Table>
                           <TableHeader>
@@ -400,7 +418,9 @@ export default function ScoresPage() {
                               <TableRow key={score.id}>
                                 <TableCell>{score.criterion.name}</TableCell>
                                 <TableCell>{score.value}</TableCell>
-                                <TableCell>{score.criterion.maxScore}</TableCell>
+                                <TableCell>
+                                  {score.criterion.maxScore}
+                                </TableCell>
                                 <TableCell>
                                   <Button
                                     onClick={() => {
@@ -451,10 +471,18 @@ export default function ScoresPage() {
           />
           {formError ? <ErrorBanner message={formError} /> : null}
           <DialogFooter>
-            <Button onClick={() => setEditingScore(null)} type="button" variant="outline">
+            <Button
+              onClick={() => setEditingScore(null)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button disabled={pending} onClick={() => void saveScore()} type="button">
+            <Button
+              disabled={pending}
+              onClick={() => void saveScore()}
+              type="button"
+            >
               {pending ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
@@ -470,7 +498,9 @@ export default function ScoresPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Update evaluation note</DialogTitle>
-            <DialogDescription>Maximum 250 words, matching evaluator rules.</DialogDescription>
+            <DialogDescription>
+              Maximum 250 words, matching evaluator rules.
+            </DialogDescription>
           </DialogHeader>
           <Textarea
             onChange={(event) => setNoteValue(event.target.value)}
@@ -478,10 +508,18 @@ export default function ScoresPage() {
           />
           {formError ? <ErrorBanner message={formError} /> : null}
           <DialogFooter>
-            <Button onClick={() => setEditingNote(null)} type="button" variant="outline">
+            <Button
+              onClick={() => setEditingNote(null)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button disabled={pending} onClick={() => void saveNote()} type="button">
+            <Button
+              disabled={pending}
+              onClick={() => void saveNote()}
+              type="button"
+            >
               {pending ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
@@ -496,7 +534,8 @@ export default function ScoresPage() {
               <DialogTitle>Set Top 10 Finalists</DialogTitle>
             </div>
             <DialogDescription>
-              Mark the top ranked teams from {results?.round.name} as official Top 10 finalists for the next round of judging.
+              Mark the top ranked teams from {results?.round.name} as official
+              Top 10 finalists for the next round of judging.
             </DialogDescription>
           </DialogHeader>
 
@@ -506,7 +545,10 @@ export default function ScoresPage() {
             </p>
             <div className="max-h-56 overflow-y-auto rounded-xl border border-border divide-y divide-border/60 bg-muted/20">
               {top10Candidates.map((c, i) => (
-                <div key={c.teamId} className="flex items-center justify-between px-3 py-2 text-xs">
+                <div
+                  key={c.teamId}
+                  className="flex items-center justify-between px-3 py-2 text-xs"
+                >
                   <span className="font-medium">
                     #{i + 1} {c.teamName}
                   </span>
@@ -519,7 +561,11 @@ export default function ScoresPage() {
           </div>
 
           <DialogFooter className="pt-2">
-            <Button onClick={() => setConfirmTop10Open(false)} type="button" variant="outline">
+            <Button
+              onClick={() => setConfirmTop10Open(false)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
             <Button
@@ -527,7 +573,9 @@ export default function ScoresPage() {
               onClick={handlePromoteTop10}
               className="bg-amber-600 hover:bg-amber-700 text-white"
             >
-              {settingTop10 ? "Promoting…" : `Confirm Top ${top10Candidates.length} Finalists`}
+              {settingTop10
+                ? "Promoting…"
+                : `Confirm Top ${top10Candidates.length} Finalists`}
             </Button>
           </DialogFooter>
         </DialogContent>

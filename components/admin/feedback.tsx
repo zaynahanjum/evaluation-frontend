@@ -12,7 +12,9 @@ export function PageHeader({
   return (
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div>
-        <h1 className="font-heading text-3xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="font-heading text-3xl font-semibold tracking-tight">
+          {title}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
       {actions ? <div className="flex flex-wrap gap-2">{actions}</div> : null}
@@ -22,7 +24,10 @@ export function PageHeader({
 
 export function ErrorBanner({ message }: { message: string }) {
   return (
-    <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive" role="alert">
+    <p
+      className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive"
+      role="alert"
+    >
       {message}
     </p>
   );
@@ -30,13 +35,22 @@ export function ErrorBanner({ message }: { message: string }) {
 
 export function SuccessBanner({ message }: { message: string }) {
   return (
-    <p className="rounded-xl bg-primary/10 px-4 py-3 text-sm text-primary" role="status">
+    <p
+      className="rounded-xl bg-primary/10 px-4 py-3 text-sm text-primary"
+      role="status"
+    >
       {message}
     </p>
   );
 }
 
-export function EmptyState({ title, detail }: { title: string; detail: string }) {
+export function EmptyState({
+  title,
+  detail,
+}: {
+  title: string;
+  detail: string;
+}) {
   return (
     <div className="rounded-2xl border border-dashed border-border px-6 py-12 text-center">
       <p className="font-medium">{title}</p>

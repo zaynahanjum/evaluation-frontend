@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -69,13 +68,17 @@ export default function RoundsPage() {
   const [criterionName, setCriterionName] = useState("");
   const [criterionDescription, setCriterionDescription] = useState("");
   const [criterionMax, setCriterionMax] = useState("10");
-  const [editingCriterion, setEditingCriterion] = useState<Criterion | null>(null);
+  const [editingCriterion, setEditingCriterion] = useState<Criterion | null>(
+    null,
+  );
 
   const [confirm, setConfirm] = useState<{
     round: RoundSummary;
     action: "start" | "end" | "delete";
   } | null>(null);
-  const [deleteCriterion, setDeleteCriterion] = useState<Criterion | null>(null);
+  const [deleteCriterion, setDeleteCriterion] = useState<Criterion | null>(
+    null,
+  );
 
   const loadRounds = useCallback(async () => {
     setLoading(true);
@@ -116,7 +119,9 @@ export default function RoundsPage() {
     const nameError = validateRoundName(name);
     const numberError = validateRoundNumber(roundNumber);
     if (nameError || numberError || !validateRoundType(type)) {
-      setFormError(nameError ?? numberError ?? "Type must be MENTORING or JUDGING.");
+      setFormError(
+        nameError ?? numberError ?? "Type must be MENTORING or JUDGING.",
+      );
       return;
     }
     setPending(true);
@@ -143,9 +148,11 @@ export default function RoundsPage() {
     setPending(true);
     setError(null);
     try {
-      if (confirm.action === "start") await adminApi.startRound(confirm.round.id);
+      if (confirm.action === "start")
+        await adminApi.startRound(confirm.round.id);
       if (confirm.action === "end") await adminApi.endRound(confirm.round.id);
-      if (confirm.action === "delete") await adminApi.deleteRound(confirm.round.id);
+      if (confirm.action === "delete")
+        await adminApi.deleteRound(confirm.round.id);
       setSuccess(
         confirm.action === "start"
           ? "Round started."
@@ -156,7 +163,9 @@ export default function RoundsPage() {
       setConfirm(null);
       await loadRounds();
     } catch (err) {
-      setError(getErrorMessage(err, "The round action could not be completed."));
+      setError(
+        getErrorMessage(err, "The round action could not be completed."),
+      );
       setConfirm(null);
     } finally {
       setPending(false);
@@ -219,7 +228,9 @@ export default function RoundsPage() {
   return (
     <div className="space-y-4">
       <PageHeader
-        actions={<Button onClick={() => setCreateOpen(true)}>Create round</Button>}
+        actions={
+          <Button onClick={() => setCreateOpen(true)}>Create round</Button>
+        }
         title="Rounds"
       />
 
@@ -266,7 +277,9 @@ export default function RoundsPage() {
                     <Badge variant="secondary">{round.type}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={statusVariant(round.status)}>{round.status}</Badge>
+                    <Badge variant={statusVariant(round.status)}>
+                      {round.status}
+                    </Badge>
                   </TableCell>
                   <TableCell>{round._count?.panels ?? 0}</TableCell>
                   <TableCell>{round._count?.criteria ?? 0}</TableCell>
@@ -352,10 +365,18 @@ export default function RoundsPage() {
             {formError ? <ErrorBanner message={formError} /> : null}
           </div>
           <DialogFooter>
-            <Button onClick={() => setCreateOpen(false)} type="button" variant="outline">
+            <Button
+              onClick={() => setCreateOpen(false)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button disabled={pending} onClick={() => void submitRound()} type="button">
+            <Button
+              disabled={pending}
+              onClick={() => void submitRound()}
+              type="button"
+            >
               {pending ? "Creating…" : "Create"}
             </Button>
           </DialogFooter>
@@ -422,7 +443,9 @@ export default function RoundsPage() {
             ))}
           </ul>
           <div className="space-y-2 border-t border-border pt-4">
-            <Label>{editingCriterion ? "Edit criterion" : "Add criterion"}</Label>
+            <Label>
+              {editingCriterion ? "Edit criterion" : "Add criterion"}
+            </Label>
             <Input
               onChange={(event) => setCriterionName(event.target.value)}
               placeholder="Name"
@@ -442,7 +465,11 @@ export default function RoundsPage() {
               value={criterionMax}
             />
             <div className="flex gap-2">
-              <Button disabled={pending} onClick={() => void saveCriterion()} type="button">
+              <Button
+                disabled={pending}
+                onClick={() => void saveCriterion()}
+                type="button"
+              >
                 {pending ? "Saving…" : editingCriterion ? "Update" : "Add"}
               </Button>
               {editingCriterion ? (

@@ -223,8 +223,7 @@ export default function LoginPage() {
             ) : null}
             {isSubmitting ? "Signing in…" : "Sign in"}
             {!isSubmitting ? <ArrowRight aria-hidden="true" /> : null}
-          </Button> 
-
+          </Button>
         </form>
       </section>
     </main>

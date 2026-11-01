@@ -7,7 +7,10 @@ export function validateUsername(value: string): string | null {
   return null;
 }
 
-export function validatePassword(value: string, required: boolean): string | null {
+export function validatePassword(
+  value: string,
+  required: boolean,
+): string | null {
   if (!required && value.trim() === "") return null;
   if (value.length < 6) return "Password must be at least 6 characters.";
   return null;

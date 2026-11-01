@@ -78,7 +78,9 @@ export default function TeamsPage() {
   const [modalError, setModalError] = useState<string | null>(null);
 
   // Delete Team State
-  const [deleteTeamModal, setDeleteTeamModal] = useState<TeamSummary | null>(null);
+  const [deleteTeamModal, setDeleteTeamModal] = useState<TeamSummary | null>(
+    null,
+  );
   const [deletingTeam, setDeletingTeam] = useState(false);
 
   const handleDeleteTeam = async () => {
@@ -129,7 +131,10 @@ export default function TeamsPage() {
   };
 
   const addParticipantRow = () => {
-    setParticipants((prev) => [...prev, { name: "", hotelNo: "", roomName: "" }]);
+    setParticipants((prev) => [
+      ...prev,
+      { name: "", hotelNo: "", roomName: "" },
+    ]);
   };
 
   const updateParticipantRow = (
@@ -234,7 +239,10 @@ export default function TeamsPage() {
     setModalError(null);
     try {
       const res = await adminApi.setTop10Teams(selectedTop10Ids);
-      setSuccess(res.message || `${selectedTop10Ids.length} team(s) marked as top 10 finalists.`);
+      setSuccess(
+        res.message ||
+          `${selectedTop10Ids.length} team(s) marked as top 10 finalists.`,
+      );
       setTop10Open(false);
       await loadTeams();
     } catch (err) {
@@ -251,8 +259,7 @@ export default function TeamsPage() {
       if (!search.trim()) return true;
       const q = search.toLowerCase();
       return (
-        t.name.toLowerCase().includes(q) ||
-        t.username.toLowerCase().includes(q)
+        t.name.toLowerCase().includes(q) || t.username.toLowerCase().includes(q)
       );
     });
   }, [teams, filter, search]);
@@ -261,7 +268,9 @@ export default function TeamsPage() {
     if (!modalSearch.trim()) return teams;
     const q = modalSearch.toLowerCase();
     return teams.filter(
-      (t) => t.name.toLowerCase().includes(q) || t.username.toLowerCase().includes(q),
+      (t) =>
+        t.name.toLowerCase().includes(q) ||
+        t.username.toLowerCase().includes(q),
     );
   }, [teams, modalSearch]);
 
@@ -431,7 +440,8 @@ export default function TeamsPage() {
               <DialogTitle>Register New Team</DialogTitle>
             </div>
             <DialogDescription>
-              Create a team login account and assign initial participant roster with accommodation details.
+              Create a team login account and assign initial participant roster
+              with accommodation details.
             </DialogDescription>
           </DialogHeader>
 
@@ -463,7 +473,9 @@ export default function TeamsPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="team-password">Initial Password * (min. 6 chars)</Label>
+              <Label htmlFor="team-password">
+                Initial Password * (min. 6 chars)
+              </Label>
               <Input
                 id="team-password"
                 onChange={(e) => setCreatePassword(e.target.value)}
@@ -477,9 +489,12 @@ export default function TeamsPage() {
             <div className="space-y-2 pt-2 border-t border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-sm font-semibold">Team Participants *</Label>
+                  <Label className="text-sm font-semibold">
+                    Team Participants *
+                  </Label>
                   <p className="text-xs text-muted-foreground">
-                    At least one participant is required. Accommodation details are optional.
+                    At least one participant is required. Accommodation details
+                    are optional.
                   </p>
                 </div>
                 <Button
@@ -506,7 +521,9 @@ export default function TeamsPage() {
                       </Label>
                       <Input
                         className="h-8 text-xs"
-                        onChange={(e) => updateParticipantRow(idx, "name", e.target.value)}
+                        onChange={(e) =>
+                          updateParticipantRow(idx, "name", e.target.value)
+                        }
                         placeholder="e.g. Alice Smith"
                         required
                         value={p.name}
@@ -514,20 +531,28 @@ export default function TeamsPage() {
                     </div>
 
                     <div className="w-full sm:w-36 space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Hotel (optional)</Label>
+                      <Label className="text-[11px] text-muted-foreground">
+                        Hotel (optional)
+                      </Label>
                       <Input
                         className="h-8 text-xs"
-                        onChange={(e) => updateParticipantRow(idx, "hotelNo", e.target.value)}
+                        onChange={(e) =>
+                          updateParticipantRow(idx, "hotelNo", e.target.value)
+                        }
                         placeholder="e.g. Hotel Grand"
                         value={p.hotelNo ?? ""}
                       />
                     </div>
 
                     <div className="w-full sm:w-28 space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">Room (optional)</Label>
+                      <Label className="text-[11px] text-muted-foreground">
+                        Room (optional)
+                      </Label>
                       <Input
                         className="h-8 text-xs"
-                        onChange={(e) => updateParticipantRow(idx, "roomName", e.target.value)}
+                        onChange={(e) =>
+                          updateParticipantRow(idx, "roomName", e.target.value)
+                        }
                         placeholder="e.g. Room 101"
                         value={p.roomName ?? ""}
                       />
@@ -552,7 +577,11 @@ export default function TeamsPage() {
             </div>
 
             <DialogFooter className="pt-3">
-              <Button onClick={() => setCreateOpen(false)} type="button" variant="outline">
+              <Button
+                onClick={() => setCreateOpen(false)}
+                type="button"
+                variant="outline"
+              >
                 Cancel
               </Button>
               <Button disabled={creating} type="submit">
@@ -572,7 +601,8 @@ export default function TeamsPage() {
               <DialogTitle>Set Top 10 Finalists</DialogTitle>
             </div>
             <DialogDescription>
-              Select up to 10 finalist teams to advance to final round judging. Saving updates the official finalists list.
+              Select up to 10 finalist teams to advance to final round judging.
+              Saving updates the official finalists list.
             </DialogDescription>
           </DialogHeader>
 
@@ -594,7 +624,10 @@ export default function TeamsPage() {
               <div className="flex gap-2">
                 <Button
                   onClick={() => {
-                    const topActive = teams.filter((t) => t.isActive).slice(0, 10).map((t) => t.id);
+                    const topActive = teams
+                      .filter((t) => t.isActive)
+                      .slice(0, 10)
+                      .map((t) => t.id);
                     setSelectedTop10Ids(topActive);
                     setModalError(null);
                   }}
@@ -639,50 +672,54 @@ export default function TeamsPage() {
               ) : (
                 modalFilteredTeams.map((team) => {
                   const isSelected = selectedTop10Ids.includes(team.id);
-                  const isMaxReached = selectedTop10Ids.length >= 10 && !isSelected;
+                  const isMaxReached =
+                    selectedTop10Ids.length >= 10 && !isSelected;
 
-return (
-  <div
-    key={team.id}
-    onClick={() => {
-      if (isMaxReached) return;
-      toggleTeamSelection(team.id);
-    }}
-    className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors ${
-      isSelected
-        ? "bg-amber-500/10 border border-amber-500/30 dark:bg-amber-500/15"
-        : isMaxReached
-        ? "opacity-40 cursor-not-allowed"
-        : "hover:bg-accent/60 cursor-pointer"
-    }`}
-  >
-    <div className="flex items-center gap-2.5 pointer-events-none">
-      <Checkbox
-        checked={isSelected}
-        disabled={isMaxReached}
-        id={`team-${team.id}`}
-      />
+                  return (
+                    <div
+                      key={team.id}
+                      onClick={() => {
+                        if (isMaxReached) return;
+                        toggleTeamSelection(team.id);
+                      }}
+                      className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors ${
+                        isSelected
+                          ? "bg-amber-500/10 border border-amber-500/30 dark:bg-amber-500/15"
+                          : isMaxReached
+                            ? "opacity-40 cursor-not-allowed"
+                            : "hover:bg-accent/60 cursor-pointer"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 pointer-events-none">
+                        <Checkbox
+                          checked={isSelected}
+                          disabled={isMaxReached}
+                          id={`team-${team.id}`}
+                        />
 
-      <div className="font-medium text-xs leading-none">
-        {team.name}
-        <span className="ml-1.5 font-mono text-[11px] text-muted-foreground font-normal">
-          @{team.username}
-        </span>
-      </div>
-    </div>
+                        <div className="font-medium text-xs leading-none">
+                          {team.name}
+                          <span className="ml-1.5 font-mono text-[11px] text-muted-foreground font-normal">
+                            @{team.username}
+                          </span>
+                        </div>
+                      </div>
 
-    <div className="flex items-center gap-1.5 pointer-events-none">
-      {team.isTopTen && (
-        <Badge className="text-[10px] h-4.5 px-1.5 bg-amber-500/10 text-amber-700 dark:text-amber-300" variant="outline">
-          Current Finalist
-        </Badge>
-      )}
+                      <div className="flex items-center gap-1.5 pointer-events-none">
+                        {team.isTopTen && (
+                          <Badge
+                            className="text-[10px] h-4.5 px-1.5 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+                            variant="outline"
+                          >
+                            Current Finalist
+                          </Badge>
+                        )}
 
-      {isSelected && (
-        <Check className="size-3.5 text-amber-600 dark:text-amber-400" />
-      )}
-    </div>
-  </div>
+                        {isSelected && (
+                          <Check className="size-3.5 text-amber-600 dark:text-amber-400" />
+                        )}
+                      </div>
+                    </div>
                   );
                 })
               )}

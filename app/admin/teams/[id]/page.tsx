@@ -53,7 +53,11 @@ import {
 } from "@/components/ui/table";
 import { adminApi } from "@/lib/admin/data-source";
 import { getErrorMessage } from "@/lib/api/errors";
-import type { AdminSubmissionRecord, Participant, TeamDetail } from "@/lib/api/types";
+import type {
+  AdminSubmissionRecord,
+  Participant,
+  TeamDetail,
+} from "@/lib/api/types";
 import { cn } from "@/lib/utils";
 
 export default function TeamDetailPage() {
@@ -74,7 +78,8 @@ export default function TeamDetailPage() {
   const [teamModalError, setTeamModalError] = useState<string | null>(null);
 
   // Edit Participant Modal State
-  const [editingParticipant, setEditingParticipant] = useState<Participant | null>(null);
+  const [editingParticipant, setEditingParticipant] =
+    useState<Participant | null>(null);
   const [partName, setPartName] = useState("");
   const [partHotelNo, setPartHotelNo] = useState("");
   const [partRoomName, setPartRoomName] = useState("");
@@ -87,7 +92,9 @@ export default function TeamDetailPage() {
   const [deleting, setDeleting] = useState(false);
 
   // Dedicated Submission State (GET /admin/submissions/:teamId)
-  const [submission, setSubmission] = useState<AdminSubmissionRecord | null>(null);
+  const [submission, setSubmission] = useState<AdminSubmissionRecord | null>(
+    null,
+  );
   const [fetchingSubmission, setFetchingSubmission] = useState(false);
 
   const fetchTeamSubmission = useCallback(async (id: string) => {
@@ -207,11 +214,15 @@ export default function TeamDetailPage() {
     setSavingPart(true);
     setPartModalError(null);
     try {
-      const updated = await adminApi.updateParticipant(team.id, editingParticipant.id, {
-        name: partName.trim(),
-        hotelNo: partHotelNo.trim() || undefined,
-        roomName: partRoomName.trim() || undefined,
-      });
+      const updated = await adminApi.updateParticipant(
+        team.id,
+        editingParticipant.id,
+        {
+          name: partName.trim(),
+          hotelNo: partHotelNo.trim() || undefined,
+          roomName: partRoomName.trim() || undefined,
+        },
+      );
 
       setTeam((prev) => {
         if (!prev) return null;
@@ -268,10 +279,16 @@ export default function TeamDetailPage() {
         <Card className="border-destructive/30">
           <CardHeader>
             <CardTitle className="text-destructive">Team not found</CardTitle>
-            <CardDescription>{error ?? "The requested team profile could not be loaded."}</CardDescription>
+            <CardDescription>
+              {error ?? "The requested team profile could not be loaded."}
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => void loadTeam()} variant="outline" className="rounded-xl">
+            <Button
+              onClick={() => void loadTeam()}
+              variant="outline"
+              className="rounded-xl"
+            >
               <RefreshCw className="size-4" aria-hidden="true" />
               Retry
             </Button>
@@ -320,7 +337,10 @@ export default function TeamDetailPage() {
             onClick={() => void loadTeam()}
             disabled={loading}
           >
-            <RefreshCw className={cn("size-3.5", loading && "animate-spin")} aria-hidden="true" />
+            <RefreshCw
+              className={cn("size-3.5", loading && "animate-spin")}
+              aria-hidden="true"
+            />
             <span>Refresh</span>
           </Button>
         </div>
@@ -380,7 +400,8 @@ export default function TeamDetailPage() {
               Participants & Room Assignments ({team.participants.length})
             </CardTitle>
             <CardDescription>
-              Registered team members, accommodation hotel, and assigned dorm rooms.
+              Registered team members, accommodation hotel, and assigned dorm
+              rooms.
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -408,20 +429,30 @@ export default function TeamDetailPage() {
                       <TableCell>
                         {p.hotelNo ? (
                           <div className="flex items-center gap-1.5 text-xs">
-                            <Hotel className="size-3.5 text-muted-foreground" aria-hidden="true" />
+                            <Hotel
+                              className="size-3.5 text-muted-foreground"
+                              aria-hidden="true"
+                            />
                             <span>{p.hotelNo}</span>
                           </div>
                         ) : (
-                          <span className="text-xs text-muted-foreground italic">Not assigned</span>
+                          <span className="text-xs text-muted-foreground italic">
+                            Not assigned
+                          </span>
                         )}
                       </TableCell>
                       <TableCell>
                         {p.roomName ? (
-                          <Badge variant="outline" className="font-mono text-xs">
+                          <Badge
+                            variant="outline"
+                            className="font-mono text-xs"
+                          >
                             {p.roomName}
                           </Badge>
                         ) : (
-                          <span className="text-xs text-muted-foreground italic">Not assigned</span>
+                          <span className="text-xs text-muted-foreground italic">
+                            Not assigned
+                          </span>
                         )}
                       </TableCell>
                       <TableCell className="text-right">
@@ -455,7 +486,9 @@ export default function TeamDetailPage() {
               <Layers className="size-5 text-primary" aria-hidden="true" />
               Evaluation Panels
             </CardTitle>
-            <CardDescription>Panels assigned to review this team</CardDescription>
+            <CardDescription>
+              Panels assigned to review this team
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {team.panelTeams && team.panelTeams.length > 0 ? (
@@ -472,7 +505,11 @@ export default function TeamDetailPage() {
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Round: <span className="font-medium text-foreground">{pt.panel.round.name}</span> ({pt.panel.round.type})
+                      Round:{" "}
+                      <span className="font-medium text-foreground">
+                        {pt.panel.round.name}
+                      </span>{" "}
+                      ({pt.panel.round.type})
                     </p>
                   </div>
                 ))}
@@ -494,11 +531,15 @@ export default function TeamDetailPage() {
             <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2 font-heading text-lg">
-                  <FileCode2 className="size-5 text-primary" aria-hidden="true" />
+                  <FileCode2
+                    className="size-5 text-primary"
+                    aria-hidden="true"
+                  />
                   Hackathon Submission
                 </CardTitle>
                 <CardDescription>
-                  Project statement, solution pitch, and code/deployment links submitted by this team.
+                  Project statement, solution pitch, and code/deployment links
+                  submitted by this team.
                 </CardDescription>
               </div>
               <div className="flex items-center gap-2">
@@ -509,7 +550,12 @@ export default function TeamDetailPage() {
                   variant="outline"
                   className="rounded-xl h-8 text-xs font-medium"
                 >
-                  <RefreshCw className={cn("size-3.5 mr-1.5", fetchingSubmission && "animate-spin")} />
+                  <RefreshCw
+                    className={cn(
+                      "size-3.5 mr-1.5",
+                      fetchingSubmission && "animate-spin",
+                    )}
+                  />
                   <span>Refresh Submission</span>
                 </Button>
                 <Button
@@ -532,7 +578,8 @@ export default function TeamDetailPage() {
                       Problem Statement
                     </h2>
                     <p className="mt-1 text-sm text-foreground whitespace-pre-wrap bg-muted/20 p-3 rounded-xl border border-border/50">
-                      {activeSubmission.problemStatement ?? "No problem statement provided."}
+                      {activeSubmission.problemStatement ??
+                        "No problem statement provided."}
                     </p>
                   </div>
 
@@ -541,7 +588,8 @@ export default function TeamDetailPage() {
                       Proposed Solution
                     </h2>
                     <p className="mt-1 text-sm text-foreground whitespace-pre-wrap bg-muted/20 p-3 rounded-xl border border-border/50">
-                      {activeSubmission.solution ?? "No solution description provided."}
+                      {activeSubmission.solution ??
+                        "No solution description provided."}
                     </p>
                   </div>
 
@@ -553,7 +601,10 @@ export default function TeamDetailPage() {
                         rel="noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-xl border bg-card px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
                       >
-                        <FolderGit2 className="size-3.5 text-primary" aria-hidden="true" />
+                        <FolderGit2
+                          className="size-3.5 text-primary"
+                          aria-hidden="true"
+                        />
                         <span>GitHub Repository</span>
                         <ExternalLink className="size-3 text-muted-foreground" />
                       </a>
@@ -566,7 +617,10 @@ export default function TeamDetailPage() {
                         rel="noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-xl border bg-card px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
                       >
-                        <Link2 className="size-3.5 text-primary" aria-hidden="true" />
+                        <Link2
+                          className="size-3.5 text-primary"
+                          aria-hidden="true"
+                        />
                         <span>Live Deployment</span>
                         <ExternalLink className="size-3 text-muted-foreground" />
                       </a>
@@ -579,7 +633,10 @@ export default function TeamDetailPage() {
                         rel="noreferrer"
                         className="inline-flex items-center gap-1.5 rounded-xl border bg-card px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
                       >
-                        <Link2 className="size-3.5 text-primary" aria-hidden="true" />
+                        <Link2
+                          className="size-3.5 text-primary"
+                          aria-hidden="true"
+                        />
                         <span>Drive / Presentation Link</span>
                         <ExternalLink className="size-3 text-muted-foreground" />
                       </a>
@@ -588,7 +645,8 @@ export default function TeamDetailPage() {
 
                   <div className="border-t pt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
                     <span>
-                      Submitted on: {new Date(activeSubmission.submittedAt).toLocaleString()}
+                      Submitted on:{" "}
+                      {new Date(activeSubmission.submittedAt).toLocaleString()}
                     </span>
                     {"id" in activeSubmission && activeSubmission.id ? (
                       <span className="font-mono text-[11px]">
@@ -607,7 +665,12 @@ export default function TeamDetailPage() {
                     variant="ghost"
                     className="mt-2 text-xs"
                   >
-                    <RefreshCw className={cn("size-3 mr-1", fetchingSubmission && "animate-spin")} />
+                    <RefreshCw
+                      className={cn(
+                        "size-3 mr-1",
+                        fetchingSubmission && "animate-spin",
+                      )}
+                    />
                     Check for submission
                   </Button>
                 </div>
@@ -645,7 +708,9 @@ export default function TeamDetailPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="edit-team-username">Username * (min. 3 characters)</Label>
+              <Label htmlFor="edit-team-username">
+                Username * (min. 3 characters)
+              </Label>
               <Input
                 id="edit-team-username"
                 onChange={(e) => setEditUsername(e.target.value)}
@@ -670,7 +735,11 @@ export default function TeamDetailPage() {
             </div>
 
             <DialogFooter className="pt-2">
-              <Button onClick={() => setEditTeamOpen(false)} type="button" variant="outline">
+              <Button
+                onClick={() => setEditTeamOpen(false)}
+                type="button"
+                variant="outline"
+              >
                 Cancel
               </Button>
               <Button disabled={savingTeam} type="submit">
@@ -712,7 +781,9 @@ export default function TeamDetailPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="part-hotel">Hotel / Accommodation (optional)</Label>
+              <Label htmlFor="part-hotel">
+                Hotel / Accommodation (optional)
+              </Label>
               <Input
                 id="part-hotel"
                 onChange={(e) => setPartHotelNo(e.target.value)}

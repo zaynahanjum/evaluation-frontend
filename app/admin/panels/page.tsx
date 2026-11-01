@@ -27,7 +27,12 @@ import { Label } from "@/components/ui/label";
 import { adminApi } from "@/lib/admin/data-source";
 import { validatePanelName } from "@/lib/admin/validation";
 import { getErrorMessage } from "@/lib/api/errors";
-import type { Panel, RoundSummary, StaffUser, TeamSummary } from "@/lib/api/types";
+import type {
+  Panel,
+  RoundSummary,
+  StaffUser,
+  TeamSummary,
+} from "@/lib/api/types";
 
 export default function PanelsPage() {
   const [rounds, setRounds] = useState<RoundSummary[]>([]);
@@ -70,7 +75,9 @@ export default function PanelsPage() {
       setTeams(teamList);
       setRoundId((current) => current || roundList[0]?.id || "");
     } catch (err) {
-      setError(getErrorMessage(err, "Could not load rounds, evaluators, or teams."));
+      setError(
+        getErrorMessage(err, "Could not load rounds, evaluators, or teams."),
+      );
     } finally {
       setLoading(false);
     }
@@ -91,11 +98,16 @@ export default function PanelsPage() {
   }, []);
 
   useEffect(() => {
-    void loadBase();
+    void (async () => {
+      await loadBase();
+    })();
   }, [loadBase]);
 
   useEffect(() => {
-    if (roundId) void loadPanels(roundId);
+    if (roundId)
+      void (async () => {
+        await loadPanels(roundId);
+      })();
   }, [roundId, loadPanels]);
 
   const selectedRound = rounds.find((round) => round.id === roundId);
@@ -138,7 +150,9 @@ export default function PanelsPage() {
       setFormError("Choose an evaluator to assign.");
       return;
     }
-    if (assignPanel.members.some((member) => member.userId === selectedUserId)) {
+    if (
+      assignPanel.members.some((member) => member.userId === selectedUserId)
+    ) {
       setFormError("That evaluator is already on this panel.");
       return;
     }
@@ -186,7 +200,10 @@ export default function PanelsPage() {
         await adminApi.deletePanel(removeTarget.panel.id);
         setSuccess("Panel deleted.");
       } else if (removeTarget.kind === "member") {
-        await adminApi.removePanelMember(removeTarget.panel.id, removeTarget.id);
+        await adminApi.removePanelMember(
+          removeTarget.panel.id,
+          removeTarget.id,
+        );
         setSuccess("Evaluator removed from the panel.");
       } else {
         await adminApi.removePanelTeam(removeTarget.panel.id, removeTarget.id);
@@ -195,7 +212,9 @@ export default function PanelsPage() {
       setRemoveTarget(null);
       await loadPanels(roundId);
     } catch (err) {
-      setError(getErrorMessage(err, "The panel change could not be completed."));
+      setError(
+        getErrorMessage(err, "The panel change could not be completed."),
+      );
       setRemoveTarget(null);
     } finally {
       setPending(false);
@@ -233,14 +252,20 @@ export default function PanelsPage() {
           onChange={(event) => setRoundId(event.target.value)}
           value={roundId}
         >
-          {rounds.length === 0 ? <option value="">No rounds available</option> : null}
+          {rounds.length === 0 ? (
+            <option value="">No rounds available</option>
+          ) : null}
           {rounds.map((round) => (
             <option key={round.id} value={round.id}>
               {round.name} ({round.type}, {round.status})
             </option>
           ))}
         </select>
-        <Button onClick={() => void loadPanels(roundId)} type="button" variant="outline">
+        <Button
+          onClick={() => void loadPanels(roundId)}
+          type="button"
+          variant="outline"
+        >
           Refresh
         </Button>
       </div>
@@ -277,7 +302,8 @@ export default function PanelsPage() {
               <div>
                 <CardTitle>{panel.name}</CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  {panel.members.length} evaluator(s) · {panel.teams.length} team(s)
+                  {panel.members.length} evaluator(s) · {panel.teams.length}{" "}
+                  team(s)
                 </p>
               </div>
               <Button
@@ -313,7 +339,9 @@ export default function PanelsPage() {
                   </Button>
                 </div>
                 {panel.members.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No evaluators assigned.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No evaluators assigned.
+                  </p>
                 ) : (
                   <ul className="space-y-2">
                     {panel.members.map((member) => (
@@ -361,7 +389,9 @@ export default function PanelsPage() {
                   </Button>
                 </div>
                 {panel.teams.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No teams assigned.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No teams assigned.
+                  </p>
                 ) : (
                   <ul className="space-y-2">
                     {panel.teams.map((item) => (
@@ -399,8 +429,8 @@ export default function PanelsPage() {
           <DialogHeader>
             <DialogTitle>Create panel</DialogTitle>
             <DialogDescription>
-              The panel is created for the selected round. Assign evaluators and teams
-              afterwards.
+              The panel is created for the selected round. Assign evaluators and
+              teams afterwards.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-2">
@@ -413,10 +443,18 @@ export default function PanelsPage() {
             {formError ? <ErrorBanner message={formError} /> : null}
           </div>
           <DialogFooter>
-            <Button onClick={() => setCreateOpen(false)} type="button" variant="outline">
+            <Button
+              onClick={() => setCreateOpen(false)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
-            <Button disabled={pending} onClick={() => void createPanel()} type="button">
+            <Button
+              disabled={pending}
+              onClick={() => void createPanel()}
+              type="button"
+            >
               {pending ? "Creating…" : "Create"}
             </Button>
           </DialogFooter>
@@ -435,8 +473,8 @@ export default function PanelsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {assignType === "members" ? "Assign evaluator" : "Assign teams"} to{" "}
-              {assignPanel?.name}
+              {assignType === "members" ? "Assign evaluator" : "Assign teams"}{" "}
+              to {assignPanel?.name}
             </DialogTitle>
             <DialogDescription>
               {assignType === "members"
@@ -466,13 +504,17 @@ export default function PanelsPage() {
             <div className="max-h-64 space-y-2 overflow-y-auto">
               {availableTeams.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
-                  All teams are already assigned to this panel, or no teams exist.
+                  All teams are already assigned to this panel, or no teams
+                  exist.
                 </p>
               ) : (
                 availableTeams.map((team) => {
                   const checked = selectedTeamIds.includes(team.id);
                   return (
-                    <label className="flex items-center gap-2 text-sm" key={team.id}>
+                    <label
+                      className="flex items-center gap-2 text-sm"
+                      key={team.id}
+                    >
                       <Checkbox
                         checked={checked}
                         onCheckedChange={(value) => {
@@ -493,13 +535,19 @@ export default function PanelsPage() {
           )}
           {formError ? <ErrorBanner message={formError} /> : null}
           <DialogFooter>
-            <Button onClick={() => setAssignPanel(null)} type="button" variant="outline">
+            <Button
+              onClick={() => setAssignPanel(null)}
+              type="button"
+              variant="outline"
+            >
               Cancel
             </Button>
             <Button
               disabled={pending}
               onClick={() =>
-                void (assignType === "members" ? assignMembers() : assignTeams())
+                void (assignType === "members"
+                  ? assignMembers()
+                  : assignTeams())
               }
               type="button"
             >

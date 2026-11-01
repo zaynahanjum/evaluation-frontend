@@ -33,10 +33,17 @@ export default function AdminDashboardPage() {
     setSuccess(null);
     try {
       const res = await adminApi.setSubmissionLock(nextLocked);
-      setData((prev) => (prev ? { ...prev, submissionLocked: nextLocked } : null));
-      setSuccess(res.message || `Final submissions are now ${nextLocked ? "closed" : "open"}.`);
+      setData((prev) =>
+        prev ? { ...prev, submissionLocked: nextLocked } : null,
+      );
+      setSuccess(
+        res.message ||
+          `Final submissions are now ${nextLocked ? "closed" : "open"}.`,
+      );
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to update submission lock status."));
+      setError(
+        getErrorMessage(err, "Failed to update submission lock status."),
+      );
     } finally {
       setTogglingLock(false);
     }
@@ -66,17 +73,27 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Admin dashboard"
-      />
+      <PageHeader title="Admin dashboard" />
       {error ? <ErrorBanner message={error} /> : null}
       {success ? <SuccessBanner message={success} /> : null}
       {loading ? <TableSkeleton rows={4} /> : null}
       {!loading && !error && data ? (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard href="/admin/users" label="Mentors" value={data.totalMentors} />
-          <StatCard href="/admin/users" label="Judges" value={data.totalJudges} />
-          <StatCard href="/admin/rounds" label="Active rounds" value={data.activeRounds.length} />
+          <StatCard
+            href="/admin/users"
+            label="Mentors"
+            value={data.totalMentors}
+          />
+          <StatCard
+            href="/admin/users"
+            label="Judges"
+            value={data.totalJudges}
+          />
+          <StatCard
+            href="/admin/rounds"
+            label="Active rounds"
+            value={data.activeRounds.length}
+          />
           <StatCard label="Teams" value={data.totalTeams} />
         </div>
       ) : null}

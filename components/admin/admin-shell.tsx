@@ -68,7 +68,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </div>
               <div>
                 <p className="text-sm font-semibold">Devhack Admin</p>
-                <p className="text-xs text-muted-foreground">{username ?? "Admin"}</p>
+                <p className="text-xs text-muted-foreground">
+                  {username ?? "Admin"}
+                </p>
               </div>
             </div>
             <Button
