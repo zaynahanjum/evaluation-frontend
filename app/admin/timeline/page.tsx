@@ -224,12 +224,19 @@ export default function TimelinePage() {
     }
   };
 
+  const [now, setNow] = useState<number | null>(null);
+
+  useEffect(() => {
+    setNow(Date.now());
+  }, []);
+
   const filteredEvents = useMemo(() => {
-    const now = new Date().getTime();
     return events.filter((ev) => {
       const evTime = new Date(ev.scheduledAt).getTime();
-      if (filter === "UPCOMING" && evTime < now) return false;
-      if (filter === "PAST" && evTime >= now) return false;
+      if (now !== null) {
+        if (filter === "UPCOMING" && evTime < now) return false;
+        if (filter === "PAST" && evTime >= now) return false;
+      }
       if (filter === "PUBLIC" && !ev.visibleToTeams) return false;
 
       if (!search.trim()) return true;
@@ -239,15 +246,14 @@ export default function TimelinePage() {
         (ev.description ? ev.description.toLowerCase().includes(q) : false)
       );
     });
-  }, [events, filter, search]);
+  }, [events, filter, search, now]);
 
-  const now = new Date().getTime();
-  const upcomingCount = events.filter(
+  const upcomingCount = now !== null ? events.filter(
     (e) => new Date(e.scheduledAt).getTime() >= now,
-  ).length;
-  const pastCount = events.filter(
+  ).length : 0;
+  const pastCount = now !== null ? events.filter(
     (e) => new Date(e.scheduledAt).getTime() < now,
-  ).length;
+  ).length : 0;
   const publicCount = events.filter((e) => e.visibleToTeams).length;
 
   return (
@@ -326,7 +332,7 @@ export default function TimelinePage() {
       ) : (
         <div className="relative space-y-4 before:absolute before:bottom-0 before:left-5 before:top-4 before:hidden before:w-0.5 before:bg-border sm:before:block">
           {filteredEvents.map((event) => {
-            const isPast = new Date(event.scheduledAt).getTime() < now;
+            const isPast = now !== null ? new Date(event.scheduledAt).getTime() < now : false;
             return (
               <div className="relative sm:pl-12" key={event.id}>
                 {/* Visual timeline dot indicator on sm screens */}

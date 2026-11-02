@@ -114,7 +114,7 @@ export default function SubmissionsPage() {
       );
       setSuccess(
         res.message ||
-          `Final submissions are now ${nextLocked ? "closed" : "open"}.`,
+        `Final submissions are now ${nextLocked ? "closed" : "open"}.`,
       );
     } catch (err) {
       setError(
@@ -255,8 +255,6 @@ export default function SubmissionsPage() {
         </div>
       </div>
 
-      {lookupError ? <ErrorBanner message={lookupError} /> : null}
-
       {/* Submissions Table */}
       {loading ? (
         <TableSkeleton rows={5} />
@@ -350,8 +348,8 @@ export default function SubmissionsPage() {
                       ) : null}
 
                       {!sub.githubRepoLink &&
-                      !sub.deploymentLink &&
-                      !sub.driveLink ? (
+                        !sub.deploymentLink &&
+                        !sub.driveLink ? (
                         <span className="text-xs text-muted-foreground italic">
                           —
                         </span>
@@ -488,8 +486,8 @@ export default function SubmissionsPage() {
                   ) : null}
 
                   {!viewSubmission.githubRepoLink &&
-                  !viewSubmission.deploymentLink &&
-                  !viewSubmission.driveLink ? (
+                    !viewSubmission.deploymentLink &&
+                    !viewSubmission.driveLink ? (
                     <span className="text-xs text-muted-foreground italic">
                       No external deliverable links provided.
                     </span>
