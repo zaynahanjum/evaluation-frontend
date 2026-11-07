@@ -38,6 +38,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -48,6 +55,8 @@ import {
 import { adminApi } from "@/lib/admin/data-source";
 import { getErrorMessage } from "@/lib/api/errors";
 import type { ParticipantInput, TeamSummary } from "@/lib/api/types";
+
+const ROOM_OPTIONS = ["IOT Lab", "AIML Lab", "Full Stack Lab"] as const;
 
 type Filter = "ALL" | "TOP10" | "ACTIVE";
 
@@ -64,8 +73,9 @@ export default function TeamsPage() {
   const [createName, setCreateName] = useState("");
   const [createUsername, setCreateUsername] = useState("");
   const [createPassword, setCreatePassword] = useState("");
+  const [createRoomName, setCreateRoomName] = useState("");
   const [participants, setParticipants] = useState<ParticipantInput[]>([
-    { name: "", hotelNo: "", roomName: "" },
+    { name: "", hotelNo: "" },
   ]);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -125,7 +135,8 @@ export default function TeamsPage() {
     setCreateName("");
     setCreateUsername("");
     setCreatePassword("");
-    setParticipants([{ name: "", hotelNo: "", roomName: "" }]);
+    setCreateRoomName("");
+    setParticipants([{ name: "", hotelNo: "" }]);
     setCreateError(null);
     setCreateOpen(true);
   };
@@ -133,7 +144,7 @@ export default function TeamsPage() {
   const addParticipantRow = () => {
     setParticipants((prev) => [
       ...prev,
-      { name: "", hotelNo: "", roomName: "" },
+      { name: "", hotelNo: "" },
     ]);
   };
 
@@ -168,10 +179,11 @@ export default function TeamsPage() {
       setCreateError("Password must be at least 6 characters.");
       return;
     }
+    const teamRoom = createRoomName.trim() || undefined;
     const validParticipants = participants.map((p) => ({
       name: p.name.trim(),
       hotelNo: p.hotelNo?.trim() || undefined,
-      roomName: p.roomName?.trim() || undefined,
+      roomName: teamRoom,
     }));
     if (validParticipants.some((p) => !p.name)) {
       setCreateError("All participant rows must have a valid name.");
@@ -241,7 +253,7 @@ export default function TeamsPage() {
       const res = await adminApi.setTop10Teams(selectedTop10Ids);
       setSuccess(
         res.message ||
-          `${selectedTop10Ids.length} team(s) marked as top 10 finalists.`,
+        `${selectedTop10Ids.length} team(s) marked as top 10 finalists.`,
       );
       setTop10Open(false);
       await loadTeams();
@@ -472,18 +484,42 @@ export default function TeamsPage() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="team-password">
-                Initial Password * (min. 6 chars)
-              </Label>
-              <Input
-                id="team-password"
-                onChange={(e) => setCreatePassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                type="password"
-                value={createPassword}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="team-password">
+                  Initial Password * (min. 6 chars)
+                </Label>
+                <Input
+                  id="team-password"
+                  onChange={(e) => setCreatePassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  type="password"
+                  value={createPassword}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="team-room">Room (optional)</Label>
+                <Select
+                  value={createRoomName || null}
+                  onValueChange={(val) =>
+                    setCreateRoomName(val === "none" ? "" : (val ?? ""))
+                  }
+                >
+                  <SelectTrigger id="team-room" className="w-full">
+                    <SelectValue placeholder="Select a lab" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">None (No room assigned)</SelectItem>
+                    {ROOM_OPTIONS.map((lab) => (
+                      <SelectItem key={lab} value={lab}>
+                        {lab}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="space-y-2 pt-2 border-t border-border">
@@ -527,34 +563,6 @@ export default function TeamsPage() {
                         placeholder="e.g. Alice Smith"
                         required
                         value={p.name}
-                      />
-                    </div>
-
-                    <div className="w-full sm:w-36 space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">
-                        Hotel (optional)
-                      </Label>
-                      <Input
-                        className="h-8 text-xs"
-                        onChange={(e) =>
-                          updateParticipantRow(idx, "hotelNo", e.target.value)
-                        }
-                        placeholder="e.g. Hotel Grand"
-                        value={p.hotelNo ?? ""}
-                      />
-                    </div>
-
-                    <div className="w-full sm:w-28 space-y-1">
-                      <Label className="text-[11px] text-muted-foreground">
-                        Room (optional)
-                      </Label>
-                      <Input
-                        className="h-8 text-xs"
-                        onChange={(e) =>
-                          updateParticipantRow(idx, "roomName", e.target.value)
-                        }
-                        placeholder="e.g. Room 101"
-                        value={p.roomName ?? ""}
                       />
                     </div>
 
@@ -682,13 +690,12 @@ export default function TeamsPage() {
                         if (isMaxReached) return;
                         toggleTeamSelection(team.id);
                       }}
-                      className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors ${
-                        isSelected
-                          ? "bg-amber-500/10 border border-amber-500/30 dark:bg-amber-500/15"
-                          : isMaxReached
-                            ? "opacity-40 cursor-not-allowed"
-                            : "hover:bg-accent/60 cursor-pointer"
-                      }`}
+                      className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-sm transition-colors ${isSelected
+                        ? "bg-amber-500/10 border border-amber-500/30 dark:bg-amber-500/15"
+                        : isMaxReached
+                          ? "opacity-40 cursor-not-allowed"
+                          : "hover:bg-accent/60 cursor-pointer"
+                        }`}
                     >
                       <div className="flex items-center gap-2.5 pointer-events-none">
                         <Checkbox
