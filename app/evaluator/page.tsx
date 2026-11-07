@@ -45,18 +45,9 @@ export default function EvaluatorDashboardPage() {
             <CardTitle className="flex items-center gap-2">
               <Clock3 className="size-5 text-amber-700" aria-hidden="true" />
               {pendingTeams.length}{" "}
-              {pendingTeams.length === 1 ? "team needs" : "teams need"}{" "}
-              attention
+              {pendingTeams.length === 1 ? "team is" : "teams are"}{" "}
+              not scored
             </CardTitle>
-            <CardDescription>
-              {pendingTeams
-                .slice(0, 3)
-                .map((team) => team.name)
-                .join(", ")}
-              {pendingTeams.length > 3
-                ? `, and ${pendingTeams.length - 3} more`
-                : ""}
-            </CardDescription>
             {nextPending ? (
               <CardAction>
                 <Button

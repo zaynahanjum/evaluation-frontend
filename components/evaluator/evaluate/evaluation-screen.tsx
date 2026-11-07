@@ -8,6 +8,8 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronDown,
+  FileText,
+  Lightbulb,
   Save,
   TriangleAlert,
 } from "lucide-react";
@@ -332,23 +334,25 @@ function ScoreEditor({
                 : "Pending"}
           </Badge>
         </CardHeader>
-        <CardContent className="grid gap-5 sm:grid-cols-2">
-          <section>
-            <h3 className="text-sm font-semibold">Problem statement</h3>
-            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
-              {team.submission === undefined
-                ? "Problem statement details are not available from the evaluator API."
-                : team.submission?.problemStatement ||
-                  "This team has not provided a problem statement."}
+        <CardContent className="grid gap-4 sm:grid-cols-2">
+          <section className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-1.5">
+            <div className="flex items-center gap-2">
+              <FileText className="size-4 text-primary" />
+              <h3 className="text-sm font-semibold text-foreground">Problem Statement</h3>
+            </div>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+              {team.submission?.problemStatement?.trim() ||
+                "No problem statement submitted yet."}
             </p>
           </section>
-          <section>
-            <h3 className="text-sm font-semibold">Solution</h3>
-            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
-              {team.submission === undefined
-                ? "Solution details are not available from the evaluator API."
-                : team.submission?.solution ||
-                  "This team has not provided a solution summary."}
+          <section className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-1.5">
+            <div className="flex items-center gap-2">
+              <Lightbulb className="size-4 text-amber-500" />
+              <h3 className="text-sm font-semibold text-foreground">Proposed Solution</h3>
+            </div>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+              {team.submission?.solution?.trim() ||
+                "No solution description submitted yet."}
             </p>
           </section>
         </CardContent>

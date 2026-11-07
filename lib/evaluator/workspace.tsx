@@ -37,18 +37,29 @@ const statusOrder: Record<EvaluationStatus, number> = {
 
 function asAssignedTeams(rounds: ActiveRound[]): AssignedTeam[] {
   return rounds.flatMap((round) =>
-    round.teams.map((team) => ({
-      ...team,
-      roundId: round.roundId,
-      roundName: round.roundName,
-      roundNumber: round.roundNumber,
-      panelId: round.panelId,
-      panelName: round.panelName,
-      criteria: [],
-      submission: null,
-      evaluationStatus: "not-started" as const,
-      evaluation: null,
-    })),
+    round.teams.map((team) => {
+      const submission =
+        team.submission ??
+        (team.problemStatement !== undefined || team.solution !== undefined
+          ? {
+              problemStatement: team.problemStatement ?? null,
+              solution: team.solution ?? null,
+            }
+          : null);
+      return {
+        id: team.id,
+        name: team.name,
+        roundId: round.roundId,
+        roundName: round.roundName,
+        roundNumber: round.roundNumber,
+        panelId: round.panelId,
+        panelName: round.panelName,
+        criteria: [],
+        submission,
+        evaluationStatus: "not-started" as const,
+        evaluation: null,
+      };
+    }),
   );
 }
 
@@ -107,6 +118,16 @@ export function EvaluatorWorkspaceProvider({
         );
         const detail = teamsByPanel.get(team.panelId)?.get(team.id);
 
+        const submission =
+          detail?.team.submission ??
+          (detail?.team.problemStatement !== undefined ||
+          detail?.team.solution !== undefined
+            ? {
+                problemStatement: detail?.team.problemStatement ?? null,
+                solution: detail?.team.solution ?? null,
+              }
+            : team.submission);
+
         return detail
           ? {
               ...team,
@@ -116,7 +137,7 @@ export function EvaluatorWorkspaceProvider({
                 teamResult?.round.criteria ??
                 detail.evaluation?.scores.map((score) => score.criterion) ??
                 [],
-              submission: detail.team.submission,
+              submission,
             }
           : team;
       });

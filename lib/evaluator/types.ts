@@ -38,7 +38,13 @@ export type ActiveRound = {
   roundNumber: number;
   panelId: string;
   panelName: string;
-  teams: { id: string; name: string }[];
+  teams: {
+    id: string;
+    name: string;
+    problemStatement?: string | null;
+    solution?: string | null;
+    submission?: TeamSubmission | null;
+  }[];
 };
 
 export type AssignedTeam = {
@@ -64,7 +70,13 @@ export type TeamsForRoundResponse = {
   };
   panel: { id: string; name: string };
   teams: {
-    team: { id: string; name: string; submission: TeamSubmission | null };
+    team: {
+      id: string;
+      name: string;
+      problemStatement?: string | null;
+      solution?: string | null;
+      submission?: TeamSubmission | null;
+    };
     evaluationStatus: EvaluationStatus;
     evaluation: Evaluation | null;
   }[];

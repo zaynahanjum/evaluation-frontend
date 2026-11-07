@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ClipboardCheck, UsersRound } from "lucide-react";
+import { AlertCircle, ClipboardCheck, FileText, Lightbulb, UsersRound } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,6 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -62,6 +72,7 @@ function totalScore(team: AssignedTeam) {
 export function AssignmentsView({ filter }: { filter: Filter }) {
   const router = useRouter();
   const { teams, error, isLoading } = useEvaluatorWorkspace();
+  const [viewingTeam, setViewingTeam] = useState<AssignedTeam | null>(null);
   const content = copy[filter];
   const filteredTeams = teams.filter((team) => {
     if (filter === "all") return true;
@@ -136,6 +147,7 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                   <TableHead className="hidden sm:table-cell">
                     My score
                   </TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -163,10 +175,10 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         <UsersRound
-                          className="size-4 text-primary"
+                          className="size-4 shrink-0 text-primary"
                           aria-hidden="true"
                         />
-                        {team.name}
+                        <span className="font-semibold">{team.name}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -177,6 +189,20 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                         {totalScore(team)}
                       </span>
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 gap-1 rounded-lg text-xs"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setViewingTeam(team);
+                        }}
+                      >
+                        <FileText className="size-3.5" />
+                        <span className="hidden sm:inline">View PS & Solution</span>
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -184,6 +210,70 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
           </CardContent>
         </Card>
       ) : null}
+
+      {/* Problem Statement & Solution Dialog */}
+      <Dialog
+        open={Boolean(viewingTeam)}
+        onOpenChange={(open) => {
+          if (!open) setViewingTeam(null);
+        }}
+      >
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <UsersRound className="size-5 text-primary" />
+              {viewingTeam?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {viewingTeam?.panelName} • Round {viewingTeam?.roundNumber} ({viewingTeam?.roundName})
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="rounded-xl border border-border/70 bg-muted/20 p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <FileText className="size-4 text-primary" />
+                <h4 className="text-sm font-semibold text-foreground">Problem Statement</h4>
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {viewingTeam?.submission?.problemStatement?.trim() ||
+                  "No problem statement submitted yet."}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border/70 bg-muted/20 p-4 space-y-2">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="size-4 text-amber-500" />
+                <h4 className="text-sm font-semibold text-foreground">Proposed Solution</h4>
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {viewingTeam?.submission?.solution?.trim() ||
+                  "No solution description submitted yet."}
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setViewingTeam(null)}
+            >
+              Close
+            </Button>
+            {viewingTeam ? (
+              <Button
+                onClick={() => {
+                  const target = viewingTeam;
+                  setViewingTeam(null);
+                  router.push(`/evaluator/rounds/${target.roundId}/teams/${target.id}`);
+                }}
+              >
+                Go to Evaluation
+              </Button>
+            ) : null}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
