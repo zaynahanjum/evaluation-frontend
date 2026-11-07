@@ -14,6 +14,7 @@ import {
   clearEvaluatorSession,
   getEvaluatorSession,
 } from "@/lib/evaluator-session";
+import { useRealtimeEvents } from "@/hooks/use-realtime-events";
 
 import { getActiveRounds, getTeamsForRound } from "./api";
 import type { ActiveRound, AssignedTeam, EvaluationStatus } from "./types";
@@ -62,13 +63,13 @@ export function EvaluatorWorkspaceProvider({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadWorkspace = useCallback(async () => {
-    setIsLoading(true);
+  const loadWorkspace = useCallback(async (silent = false) => {
+    if (!silent) setIsLoading(true);
     setError(null);
 
     const session = getEvaluatorSession();
     if (!session) {
-      setIsLoading(false);
+      if (!silent) setIsLoading(false);
       router.replace("/login");
       return;
     }
@@ -149,6 +150,16 @@ export function EvaluatorWorkspaceProvider({
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, [loadWorkspace]);
+
+  // Real-time auto-refresh when admin changes rounds, panels, criteria, or when scores update
+  useRealtimeEvents(getEvaluatorSession()?.accessToken, {
+    ROUND_STATUS_CHANGED: () => void loadWorkspace(true),
+    ROUND_CHANGED: () => void loadWorkspace(true),
+    PANELS_CHANGED: () => void loadWorkspace(true),
+    CRITERIA_CHANGED: () => void loadWorkspace(true),
+    SCORES_UPDATED: () => void loadWorkspace(true),
+    SUBMISSION_UPDATED: () => void loadWorkspace(true),
+  });
 
   const value = useMemo(
     () => ({

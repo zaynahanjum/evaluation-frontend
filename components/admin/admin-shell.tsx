@@ -13,6 +13,7 @@ import {
   Trophy,
   Users,
   UsersRound,
+  UserRound
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -63,9 +64,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <aside className="border-b border-border bg-card lg:w-64 lg:border-r lg:border-b-0">
           <div className="flex items-center justify-between gap-3 px-5 py-5 lg:block">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                {"</>"}
+              <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                <UserRound className="size-5" />
               </div>
+
               <div>
                 <p className="text-sm font-semibold">Devhack Admin</p>
                 <p className="text-xs text-muted-foreground">

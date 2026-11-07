@@ -49,6 +49,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { adminApi } from "@/lib/admin/data-source";
+import { getAdminSession } from "@/lib/admin-session";
+import { useRealtimeEvents } from "@/hooks/use-realtime-events";
 import { getErrorMessage } from "@/lib/api/errors";
 import type {
   AdminSubmissionRecord,
@@ -82,16 +84,18 @@ export default function SubmissionsPage() {
     }
   };
 
-  const loadSubmissions = useCallback(async () => {
-    setLoading(true);
+  const loadSubmissions = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       const result = await adminApi.listSubmissions();
       setData(result);
     } catch (err) {
-      setError(getErrorMessage(err, "Failed to load project submissions."));
+      if (!silent) {
+        setError(getErrorMessage(err, "Failed to load project submissions."));
+      }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, []);
 
@@ -101,6 +105,12 @@ export default function SubmissionsPage() {
     }, 0);
     return () => window.clearTimeout(timeoutId);
   }, [loadSubmissions]);
+
+  // Real-time auto-refresh when teams submit or locks change
+  useRealtimeEvents(getAdminSession()?.accessToken, {
+    SUBMISSION_UPDATED: () => void loadSubmissions(true),
+    SUBMISSION_LOCK_CHANGED: () => void loadSubmissions(true),
+  });
 
   const handleToggleLock = async () => {
     if (!data) return;

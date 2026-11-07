@@ -310,7 +310,9 @@ export type DashboardData = {
     type: RoundType;
   }>;
   topTeams: Array<{ id: string; name: string }>;
-  submissionLocked: boolean;
+  submissionLocked?: boolean;
+  initialSubmissionLocked?: boolean;
+  finalSubmissionLocked?: boolean;
 };
 
 export type TimelineEvent = {

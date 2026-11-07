@@ -336,3 +336,19 @@ export async function setSubmissionLock(locked: boolean) {
   });
   return payload;
 }
+
+export async function setFinalSubmissionLock(locked: boolean) {
+  const payload = await apiRequest<ApiMessage>("/admin/submissions/lock/final", {
+    method: "PATCH",
+    body: { locked },
+  });
+  return payload;
+}
+
+export async function setInitialSubmissionLock(locked: boolean) {
+  const payload = await apiRequest<ApiMessage>("/admin/submissions/lock/initial", {
+    method: "PATCH",
+    body: { locked },
+  });
+  return payload;
+}
