@@ -24,11 +24,9 @@ import { useEvaluatorWorkspace } from "@/lib/evaluator/workspace";
 
 type Filter = "all" | "pending" | "completed";
 
-const copy: Record<Filter, { title: string; description: string }> = {
+const copy: Record<Filter, { title: string; description?: string }> = {
   all: {
     title: "My teams",
-    description:
-      "All teams assigned to your active panels, with pending teams first.",
   },
   pending: {
     title: "Pending evaluations",
@@ -75,7 +73,6 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
     <section>
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-sm text-muted-foreground">Evaluator workspace</p>
           <h2 className="mt-1 font-heading text-3xl font-semibold tracking-tight">
             {content.title}
           </h2>

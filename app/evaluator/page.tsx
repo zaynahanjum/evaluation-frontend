@@ -81,18 +81,11 @@ export default function EvaluatorDashboardPage() {
           <Card key={`${round.roundId}-${round.panelId}`}>
             <CardHeader>
               <CardTitle>{round.roundName}</CardTitle>
-              <CardDescription>
-                Round {round.roundNumber} / {round.roundType}
-              </CardDescription>
               <CardAction>
                 <Badge>Active</Badge>
               </CardAction>
             </CardHeader>
             <CardContent className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
-              <span>
-                {round.panelName} / {round.teams.length} assigned{" "}
-                {round.teams.length === 1 ? "team" : "teams"}
-              </span>
               <Button
                 size="sm"
                 variant="outline"
