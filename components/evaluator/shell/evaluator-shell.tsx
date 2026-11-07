@@ -28,7 +28,6 @@ const navigation = [
   { href: "/evaluator/teams", label: "My Teams", icon: UsersRound },
   { href: "/evaluator/pending", label: "Pending", icon: ListChecks },
   { href: "/evaluator/completed", label: "Completed", icon: ClipboardCheck },
-  { href: "/evaluator/scores", label: "My Scores", icon: ClipboardCheck },
 ];
 
 function subscribeToHydration() {

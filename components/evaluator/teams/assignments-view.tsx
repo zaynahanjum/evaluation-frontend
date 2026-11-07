@@ -1,15 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import {
-  AlertCircle,
-  ArrowUpRight,
-  ClipboardCheck,
-  UsersRound,
-} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AlertCircle, ClipboardCheck, UsersRound } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -28,7 +22,7 @@ import {
 import type { AssignedTeam } from "@/lib/evaluator/types";
 import { useEvaluatorWorkspace } from "@/lib/evaluator/workspace";
 
-type Filter = "all" | "pending" | "completed" | "scores";
+type Filter = "all" | "pending" | "completed";
 
 const copy: Record<Filter, { title: string; description: string }> = {
   all: {
@@ -43,11 +37,6 @@ const copy: Record<Filter, { title: string; description: string }> = {
   completed: {
     title: "Completed evaluations",
     description: "Teams whose scores you have submitted and confirmed.",
-  },
-  scores: {
-    title: "My scores",
-    description:
-      "Your saved and submitted evaluations for active assigned teams.",
   },
 };
 
@@ -73,13 +62,13 @@ function totalScore(team: AssignedTeam) {
 }
 
 export function AssignmentsView({ filter }: { filter: Filter }) {
+  const router = useRouter();
   const { teams, error, isLoading } = useEvaluatorWorkspace();
   const content = copy[filter];
   const filteredTeams = teams.filter((team) => {
     if (filter === "all") return true;
     if (filter === "pending") return team.evaluationStatus !== "confirmed";
-    if (filter === "completed") return team.evaluationStatus === "confirmed";
-    return team.evaluation !== null;
+    return team.evaluationStatus === "confirmed";
   });
 
   return (
@@ -146,21 +135,34 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
               <TableHeader>
                 <TableRow>
                   <TableHead>Team</TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    Round / panel
-                  </TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="hidden sm:table-cell">
                     My score
-                  </TableHead>
-                  <TableHead>
-                    <span className="sr-only">Open evaluation</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredTeams.map((team) => (
-                  <TableRow key={`${team.roundId}-${team.panelId}-${team.id}`}>
+                  <TableRow
+                    key={`${team.roundId}-${team.panelId}-${team.id}`}
+                    className="cursor-pointer transition-colors hover:bg-muted/50"
+                    onClick={() =>
+                      router.push(
+                        `/evaluator/rounds/${team.roundId}/teams/${team.id}`,
+                      )
+                    }
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        router.push(
+                          `/evaluator/rounds/${team.roundId}/teams/${team.id}`,
+                        );
+                      }
+                    }}
+                    tabIndex={0}
+                    role="link"
+                    aria-label={`Open evaluation for ${team.name}`}
+                  >
                     <TableCell className="font-medium">
                       <div className="flex items-center gap-2">
                         <UsersRound
@@ -170,30 +172,13 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                         {team.name}
                       </div>
                     </TableCell>
-                    <TableCell className="hidden text-muted-foreground md:table-cell">
-                      Round {team.roundNumber} / {team.panelName}
-                    </TableCell>
                     <TableCell>
                       <StatusBadge status={team.evaluationStatus} />
                     </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      {totalScore(team)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="rounded-xl"
-                        nativeButton={false}
-                        render={
-                          <Link
-                            href={`/evaluator/rounds/${team.roundId}/teams/${team.id}`}
-                          />
-                        }
-                      >
-                        <span className="hidden sm:inline">Evaluate</span>
-                        <ArrowUpRight aria-hidden="true" />
-                      </Button>
+                    <TableCell className="sm:table-cell">
+                      <span className="inline-flex rounded-md bg-muted/80 px-2 py-1 text-xs font-medium text-foreground sm:text-sm">
+                        {totalScore(team)}
+                      </span>
                     </TableCell>
                   </TableRow>
                 ))}
