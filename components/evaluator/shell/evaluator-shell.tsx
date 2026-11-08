@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   LogOut,
-  RefreshCw,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -113,19 +112,6 @@ export function EvaluatorShell({ children }: { children: React.ReactNode }) {
                 </p>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-xl"
-              onClick={refresh}
-              disabled={isLoading}
-            >
-              <RefreshCw
-                className={cn("size-3.5", isLoading && "animate-spin")}
-                aria-hidden="true"
-              />
-              <span className="hidden sm:inline">Refresh</span>
-            </Button>
           </header>
           <main className="flex-1 px-4 py-6 sm:px-8">{children}</main>
         </div>

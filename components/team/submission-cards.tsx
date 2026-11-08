@@ -13,7 +13,6 @@ import {
   LoaderCircle,
   Lock,
   Pencil,
-  RefreshCw,
   Send,
   Unlock,
 } from "lucide-react";
@@ -298,16 +297,6 @@ export function ProblemStatementCard({
             </Button>
           </div>
         )}
-
-        <Button
-          variant="ghost"
-          size="sm"
-          className="rounded-xl text-xs"
-          onClick={() => void onRefresh()}
-        >
-          <RefreshCw className="mr-1.5 size-3" />
-          Refresh Status
-        </Button>
       </CardFooter>
     </Card>
   );
@@ -664,16 +653,6 @@ export function FinalDeliverablesCard({
             </Button>
           </div>
         )}
-
-        <Button
-          variant="ghost"
-          size="sm"
-          className="rounded-xl text-xs"
-          onClick={() => void onRefresh()}
-        >
-          <RefreshCw className="mr-1.5 size-3" />
-          Refresh
-        </Button>
       </CardFooter>
     </Card>
   );

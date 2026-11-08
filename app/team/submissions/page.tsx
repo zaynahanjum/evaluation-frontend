@@ -5,7 +5,6 @@ import {
   FileCode2,
   FolderGit2,
   Layers,
-  RefreshCw,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -71,18 +70,6 @@ export default function TeamSubmissionsPage() {
             Submit your problem statement, solution, and final project deliverables when windows are open.
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => void fetchSubmission()}
-          disabled={loading}
-          className="self-start sm:self-auto shrink-0"
-        >
-          <RefreshCw
-            className={`h-4 w-4 mr-1.5 ${loading ? "animate-spin text-primary" : ""}`}
-          />
-          Refresh
-        </Button>
       </div>
 
       {error ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -58,19 +58,6 @@ export default function TeamTimelinePage() {
             Keep track of scheduled rounds, evaluation windows, and important milestones.
           </p>
         </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => void fetchTimeline()}
-          disabled={loading}
-          className="self-start sm:self-auto shrink-0"
-        >
-          <RefreshCw
-            className={`h-4 w-4 mr-1.5 ${loading ? "animate-spin text-primary" : ""}`}
-          />
-          Refresh
-        </Button>
       </div>
 
       {/* Error Banner */}

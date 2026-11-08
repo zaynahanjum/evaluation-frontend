@@ -261,13 +261,6 @@ export default function PanelsPage() {
             </option>
           ))}
         </select>
-        <Button
-          onClick={() => void loadPanels(roundId)}
-          type="button"
-          variant="outline"
-        >
-          Refresh
-        </Button>
       </div>
 
       {selectedRound ? (

@@ -13,7 +13,7 @@ import {
   Layers,
   Link2,
   Pencil,
-  RefreshCw,
+  RotateCcw,
   Trash2,
   Trophy,
   UserRound,
@@ -287,7 +287,7 @@ export function TeamDetailView({ teamId }: { teamId: string }) {
               variant="outline"
               className="rounded-xl"
             >
-              <RefreshCw className="size-4" aria-hidden="true" />
+              <RotateCcw className="size-4" aria-hidden="true" />
               Retry
             </Button>
           </CardContent>
@@ -327,19 +327,6 @@ export function TeamDetailView({ teamId }: { teamId: string }) {
           >
             <Trash2 className="size-3.5 mr-1.5" />
             Delete Team
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-xl"
-            onClick={() => void loadTeam()}
-            disabled={loading}
-          >
-            <RefreshCw
-              className={cn("size-3.5", loading && "animate-spin")}
-              aria-hidden="true"
-            />
-            <span>Refresh</span>
           </Button>
         </div>
       </div>
@@ -542,21 +529,6 @@ export function TeamDetailView({ teamId }: { teamId: string }) {
               </div>
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => void fetchTeamSubmission(team.id)}
-                  disabled={fetchingSubmission}
-                  size="sm"
-                  variant="outline"
-                  className="rounded-xl h-8 text-xs font-medium"
-                >
-                  <RefreshCw
-                    className={cn(
-                      "size-3.5 mr-1.5",
-                      fetchingSubmission && "animate-spin",
-                    )}
-                  />
-                  <span>Refresh Submission</span>
-                </Button>
-                <Button
                   variant="outline"
                   size="sm"
                   className="rounded-xl h-8 text-xs font-medium"
@@ -656,21 +628,6 @@ export function TeamDetailView({ teamId }: { teamId: string }) {
               ) : (
                 <div className="py-8 text-center text-sm text-muted-foreground">
                   <p>No final submission recorded for this team yet.</p>
-                  <Button
-                    onClick={() => void fetchTeamSubmission(team.id)}
-                    disabled={fetchingSubmission}
-                    size="sm"
-                    variant="ghost"
-                    className="mt-2 text-xs"
-                  >
-                    <RefreshCw
-                      className={cn(
-                        "size-3 mr-1",
-                        fetchingSubmission && "animate-spin",
-                      )}
-                    />
-                    Check for submission
-                  </Button>
                 </div>
               )}
             </CardContent>

@@ -10,7 +10,6 @@ import {
   FileCode2,
   Lock,
   MapPin,
-  RefreshCw,
   Sparkles,
   Unlock,
   Users,
@@ -151,19 +150,6 @@ export default function TeamDashboardPage() {
             Welcome to the Devhack 2026 participant portal. Manage your submissions and stay updated with the schedule.
           </p>
         </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => void loadDashboardData()}
-          disabled={loading}
-          className="self-start sm:self-auto shrink-0"
-        >
-          <RefreshCw
-            className={`h-4 w-4 mr-1.5 ${loading ? "animate-spin text-primary" : ""}`}
-          />
-          Refresh
-        </Button>
       </div>
 
       {error ? (

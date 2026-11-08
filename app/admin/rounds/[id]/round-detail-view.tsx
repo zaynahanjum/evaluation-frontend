@@ -14,7 +14,7 @@ import {
   Pencil,
   Play,
   Plus,
-  RefreshCw,
+  RotateCcw,
   SlidersHorizontal,
   Square,
   Trash2,
@@ -336,7 +336,7 @@ export function RoundDetailView({ roundId }: { roundId: string }) {
               variant="outline"
               className="rounded-xl"
             >
-              <RefreshCw className="size-4" aria-hidden="true" />
+              <RotateCcw className="size-4" aria-hidden="true" />
               Retry
             </Button>
           </CardContent>
@@ -403,20 +403,6 @@ export function RoundDetailView({ roundId }: { roundId: string }) {
           >
             <Trash2 className="size-3.5 mr-1.5" />
             Delete Round
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-xl"
-            onClick={() => void loadRound()}
-            disabled={loading}
-          >
-            <RefreshCw
-              className={cn("size-3.5", loading && "animate-spin")}
-              aria-hidden="true"
-            />
-            <span>Refresh</span>
           </Button>
         </div>
       </div>

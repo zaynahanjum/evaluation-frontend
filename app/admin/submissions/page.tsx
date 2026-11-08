@@ -8,9 +8,9 @@ import {
   FolderGit2,
   Globe,
   Link2,
+  Loader2,
   Lock,
   LockOpen,
-  RefreshCw,
   Search,
   UsersRound,
 } from "lucide-react";
@@ -385,7 +385,7 @@ export default function SubmissionsPage() {
                       className="rounded-xl h-8 text-xs font-medium"
                     >
                       {loadingTeamId === sub.teamId ? (
-                        <RefreshCw className="size-3 mr-1 animate-spin" />
+                        <Loader2 className="size-3 mr-1 animate-spin" />
                       ) : null}
                       <span>View Full Pitch</span>
                       <ExternalLink className="size-3 ml-1 text-muted-foreground" />
@@ -510,23 +510,6 @@ export default function SubmissionsPage() {
           <DialogFooter className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
             {viewSubmission ? (
               <div className="flex items-center gap-2">
-                <Button
-                  onClick={() =>
-                    void handleOpenSubmission(viewSubmission.teamId)
-                  }
-                  disabled={loadingTeamId === viewSubmission.teamId}
-                  size="sm"
-                  variant="outline"
-                  className="rounded-xl text-xs"
-                >
-                  <RefreshCw
-                    className={cn(
-                      "size-3 mr-1.5",
-                      loadingTeamId === viewSubmission.teamId && "animate-spin",
-                    )}
-                  />
-                  <span>Refresh</span>
-                </Button>
                 <Button
                   variant="ghost"
                   size="sm"

@@ -251,13 +251,6 @@ export default function ScoresPage() {
             </option>
           ))}
         </select>
-        <Button
-          onClick={() => void loadScores(roundId)}
-          type="button"
-          variant="outline"
-        >
-          Refresh
-        </Button>
       </div>
 
       {success ? <SuccessBanner message={success} /> : null}

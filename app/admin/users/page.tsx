@@ -245,13 +245,6 @@ export default function UsersPage() {
           <option value="MENTOR">Mentors</option>
           <option value="JUDGE">Judges</option>
         </select>
-        <Button
-          onClick={() => void loadUsers()}
-          type="button"
-          variant="outline"
-        >
-          Refresh
-        </Button>
       </div>
 
       {success ? <SuccessBanner message={success} /> : null}
