@@ -84,7 +84,7 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
     <section>
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <h2 className="mt-1 font-heading text-3xl font-semibold tracking-tight">
+          <h2 className="mt-1 font-norse-bold text-3xl font-bold tracking-wide">
             {content.title}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">

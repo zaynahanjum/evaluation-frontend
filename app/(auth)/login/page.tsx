@@ -13,7 +13,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
+import Image from "next/image";
 import { saveAdminSession } from "@/lib/admin-session";
 import {
   apiBaseUrl,
@@ -61,7 +61,7 @@ export default function LoginPage() {
       if (!response.ok || !payload.success || !payload.data) {
         setError(
           payload.message ??
-            "We could not sign you in. Check your credentials and try again.",
+          "We could not sign you in. Check your credentials and try again.",
         );
         return;
       }
@@ -115,24 +115,17 @@ export default function LoginPage() {
         className="pointer-events-none absolute -right-40 -bottom-48 z-0 size-120 rounded-full bg-muted/70 blur-3xl"
       />
       <section className="relative z-10 w-full max-w-lg rounded-2xl border border-border bg-card p-8 shadow-2xl shadow-foreground/10 sm:p-10">
-        <div className="mb-8">
-          <div className="mb-9 flex items-center justify-between gap-5">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                {"</>"}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">Devhack</p>
-                <p className="text-xs text-muted-foreground">SOSC</p>
-              </div>
-            </div>
-            <p className="shrink-0 text-right text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
-              Devhost 2026
-            </p>
-          </div>
-          <h1 className="mt-3 font-heading text-4xl font-semibold tracking-tight text-card-foreground">
+        <div className="mb-8 flex flex-row items-center justify-between">
+          <h1 className="mt-3 font-norse-bold text-4xl sm:text-5xl font-bold tracking-wide text-card-foreground">
             Login
           </h1>
+          <Image
+            src="/images/DVHST.png"
+            alt="devhost-logo"
+            width={300}
+            height={100}
+            className="w-auto h-10"
+          />
         </div>
 
         <form className="space-y-5" onSubmit={signIn}>
