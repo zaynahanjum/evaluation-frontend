@@ -124,7 +124,7 @@ export default function LoginPage() {
             alt="devhost-logo"
             width={300}
             height={100}
-            className="w-auto h-10"
+            className="w-auto md:h-10 h-8"
           />
         </div>
 
