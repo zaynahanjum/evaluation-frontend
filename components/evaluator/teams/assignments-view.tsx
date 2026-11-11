@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ClipboardCheck, FileText, Lightbulb, UsersRound } from "lucide-react";
+import {
+  AlertCircle,
+  BarChart3,
+  ChevronRight,
+  ClipboardCheck,
+  FileText,
+  Lightbulb,
+  MessageSquare,
+  Trophy,
+  UsersRound,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,7 +39,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { AssignedTeam } from "@/lib/evaluator/types";
+import type { AssignedTeam, PreviousRoundScoreSummary } from "@/lib/evaluator/types";
 import { useEvaluatorWorkspace } from "@/lib/evaluator/workspace";
 
 type Filter = "all" | "pending" | "completed";
@@ -71,8 +81,12 @@ function totalScore(team: AssignedTeam) {
 
 export function AssignmentsView({ filter }: { filter: Filter }) {
   const router = useRouter();
-  const { teams, error, isLoading } = useEvaluatorWorkspace();
+  const { teams, previousRounds, error, isLoading } = useEvaluatorWorkspace();
   const [viewingTeam, setViewingTeam] = useState<AssignedTeam | null>(null);
+  const [selectedPreviousScore, setSelectedPreviousScore] = useState<{
+    teamName: string;
+    roundScore: PreviousRoundScoreSummary;
+  } | null>(null);
   const content = copy[filter];
   const filteredTeams = teams.filter((team) => {
     if (filter === "all") return true;
@@ -143,6 +157,11 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
               <TableHeader>
                 <TableRow>
                   <TableHead>Team</TableHead>
+                  {previousRounds.map((pr) => (
+                    <TableHead key={pr.id} className="whitespace-nowrap">
+                      {pr.name}
+                    </TableHead>
+                  ))}
                   <TableHead>Status</TableHead>
                   <TableHead className="hidden sm:table-cell">
                     My score
@@ -181,6 +200,42 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                         <span className="font-semibold">{team.name}</span>
                       </div>
                     </TableCell>
+                    {previousRounds.map((pr) => {
+                      const roundScore = team.previousRoundScores?.find(
+                        (prs) => prs.roundId === pr.id,
+                      );
+                      const hasScore =
+                        roundScore && roundScore.totalAvgScore !== null;
+
+                      return (
+                        <TableCell key={pr.id} className="whitespace-nowrap">
+                          {hasScore ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPreviousScore({
+                                  teamName: team.name,
+                                  roundScore,
+                                });
+                              }}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/60 px-2.5 py-1 text-xs font-semibold text-foreground transition-all hover:bg-primary/10 hover:border-primary/50 hover:text-primary group cursor-pointer"
+                              title={`View ${pr.name} category marks distribution & notes`}
+                            >
+                              <span>{roundScore.totalAvgScore}</span>
+                              <span className="text-[10px] text-muted-foreground font-normal">
+                                /{roundScore.maxPossibleScore}
+                              </span>
+                              <ChevronRight className="size-3 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-transform" />
+                            </button>
+                          ) : (
+                            <span className="text-xs text-muted-foreground pl-2.5">
+                              —
+                            </span>
+                          )}
+                        </TableCell>
+                      );
+                    })}
                     <TableCell>
                       <StatusBadge status={team.evaluationStatus} />
                     </TableCell>
@@ -271,6 +326,140 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                 Go to Evaluation
               </Button>
             ) : null}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Previous Round Scores & Feedback Dialog */}
+      <Dialog
+        open={Boolean(selectedPreviousScore)}
+        onOpenChange={(open) => {
+          if (!open) setSelectedPreviousScore(null);
+        }}
+      >
+        <DialogContent className="max-w-xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex flex-wrap items-center justify-between gap-2 pr-6">
+              <DialogTitle className="flex items-center gap-2 text-xl font-bold">
+                {selectedPreviousScore?.teamName}
+              </DialogTitle>
+              <Badge variant="secondary" className="text-xs">
+                {selectedPreviousScore?.roundScore.roundName}
+              </Badge>
+            </div>
+          </DialogHeader>
+
+          <div className="space-y-5 py-2">
+            {/* Overall Score Highlight */}
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Total Average Score
+                </p>
+                <p className="text-2xl font-bold text-foreground mt-0.5">
+                  {selectedPreviousScore?.roundScore.totalAvgScore}{" "}
+                  <span className="text-sm font-normal text-muted-foreground">
+                    / {selectedPreviousScore?.roundScore.maxPossibleScore}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* Marks Distribution by Category */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="size-4 text-primary" />
+                <h4 className="text-sm font-semibold text-foreground">
+                  Marks Distribution by Category
+                </h4>
+              </div>
+
+              <div className="space-y-3 rounded-xl border border-border/70 bg-card p-4">
+                {selectedPreviousScore?.roundScore.criteria.map((criterion) => {
+                  const percentage =
+                    criterion.maxScore > 0
+                      ? Math.min(
+                        100,
+                        Math.round(
+                          (criterion.avgScore / criterion.maxScore) * 100,
+                        ),
+                      )
+                      : 0;
+
+                  return (
+                    <div key={criterion.criterionId} className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-medium text-foreground">
+                          {criterion.criterionName}
+                        </span>
+                        <span className="font-semibold text-foreground">
+                          {criterion.avgScore}{" "}
+                          <span className="font-normal text-muted-foreground">
+                            / {criterion.maxScore}
+                          </span>
+                        </span>
+                      </div>
+                      <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                        <div
+                          className="h-full rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Evaluator Notes */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <MessageSquare className="size-4 text-primary" />
+                <h4 className="text-sm font-semibold text-foreground">
+                  Evaluator Notes & Feedback
+                </h4>
+              </div>
+
+              {selectedPreviousScore?.roundScore.notes &&
+                selectedPreviousScore.roundScore.notes.length > 0 ? (
+                <div className="space-y-2.5">
+                  {selectedPreviousScore.roundScore.notes.map((n, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-border/70 bg-muted/20 p-3.5 space-y-1.5"
+                    >
+                      <div className="flex items-center justify-between text-[11px] text-muted-foreground font-medium">
+                        <span>
+                          Feedback{" "}
+                          {selectedPreviousScore.roundScore.notes.length > 1
+                            ? `#${idx + 1}`
+                            : ""}
+                        </span>
+                        {n.evaluatorName ? <span>by {n.evaluatorName}</span> : null}
+                      </div>
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+                        {n.note}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-xl border border-dashed border-border/80 p-4 text-center">
+                  <p className="text-xs text-muted-foreground">
+                    No notes recorded for this round.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setSelectedPreviousScore(null)}
+            >
+              Close
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -17,11 +17,17 @@ import {
 import { useRealtimeEvents } from "@/hooks/use-realtime-events";
 
 import { getActiveRounds, getTeamsForRound } from "./api";
-import type { ActiveRound, AssignedTeam, EvaluationStatus } from "./types";
+import type {
+  ActiveRound,
+  AssignedTeam,
+  EvaluationStatus,
+  PreviousRoundMeta,
+} from "./types";
 
 type WorkspaceValue = {
   rounds: ActiveRound[];
   teams: AssignedTeam[];
+  previousRounds: PreviousRoundMeta[];
   isLoading: boolean;
   error: string | null;
   refresh: () => void;
@@ -71,6 +77,7 @@ export function EvaluatorWorkspaceProvider({
   const router = useRouter();
   const [rounds, setRounds] = useState<ActiveRound[]>([]);
   const [teams, setTeams] = useState<AssignedTeam[]>([]);
+  const [previousRounds, setPreviousRounds] = useState<PreviousRoundMeta[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -138,11 +145,18 @@ export function EvaluatorWorkspaceProvider({
                 detail.evaluation?.scores.map((score) => score.criterion) ??
                 [],
               submission,
+              previousRoundScores: detail.previousRoundScores ?? [],
             }
           : team;
       });
 
+      const allPrevRounds = teamResults.flatMap((r) => r.previousRounds ?? []);
+      const uniquePrevRounds = Array.from(
+        new Map(allPrevRounds.map((r) => [r.id, r])).values(),
+      ).sort((a, b) => a.roundNumber - b.roundNumber);
+
       setRounds(activeRounds);
+      setPreviousRounds(uniquePrevRounds);
       setTeams(
         updatedTeams.sort(
           (a, b) =>
@@ -186,6 +200,7 @@ export function EvaluatorWorkspaceProvider({
     () => ({
       rounds,
       teams,
+      previousRounds,
       isLoading,
       error,
       refresh: () => {
@@ -193,7 +208,7 @@ export function EvaluatorWorkspaceProvider({
         void loadWorkspace();
       },
     }),
-    [error, isLoading, loadWorkspace, rounds, teams],
+    [error, isLoading, loadWorkspace, previousRounds, rounds, teams],
   );
 
   return (

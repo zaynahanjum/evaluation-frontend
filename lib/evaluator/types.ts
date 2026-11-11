@@ -59,6 +59,39 @@ export type AssignedTeam = {
   submission: TeamSubmission | null;
   evaluationStatus: EvaluationStatus;
   evaluation: Evaluation | null;
+  previousRoundScores?: PreviousRoundScoreSummary[];
+};
+
+export type PreviousRoundCriterionScore = {
+  criterionId: string;
+  criterionName: string;
+  maxScore: number;
+  avgScore: number;
+};
+
+export type PreviousRoundNote = {
+  evaluatorId: string;
+  evaluatorName: string;
+  note: string;
+};
+
+export type PreviousRoundScoreSummary = {
+  roundId: string;
+  roundName: string;
+  roundNumber: number;
+  roundType: string;
+  totalAvgScore: number | null;
+  maxPossibleScore: number;
+  criteria: PreviousRoundCriterionScore[];
+  notes: PreviousRoundNote[];
+  evaluatorCount: number;
+};
+
+export type PreviousRoundMeta = {
+  id: string;
+  name: string;
+  roundNumber: number;
+  type: string;
 };
 
 export type TeamsForRoundResponse = {
@@ -69,6 +102,7 @@ export type TeamsForRoundResponse = {
     criteria: EvaluationCriterion[];
   };
   panel: { id: string; name: string };
+  previousRounds?: PreviousRoundMeta[];
   teams: {
     team: {
       id: string;
@@ -79,5 +113,6 @@ export type TeamsForRoundResponse = {
     };
     evaluationStatus: EvaluationStatus;
     evaluation: Evaluation | null;
+    previousRoundScores?: PreviousRoundScoreSummary[];
   }[];
 };
