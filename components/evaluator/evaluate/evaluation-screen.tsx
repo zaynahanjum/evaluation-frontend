@@ -365,9 +365,7 @@ function ScoreEditor({
               Criteria unavailable
             </CardTitle>
             <CardDescription>
-              No criteria were returned for this team. The evaluator API must
-              provide the active round&apos;s criteria before a new score can be
-              entered.
+              Criteria not configured.
             </CardDescription>
           </CardHeader>
         </Card>
