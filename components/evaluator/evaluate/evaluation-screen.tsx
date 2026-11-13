@@ -23,7 +23,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { getEvaluatorSession } from "@/lib/evaluator-session";
@@ -378,38 +384,65 @@ function ScoreEditor({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            {scores.map((score) => (
-              <label
-                key={score.criterionId}
-                className="grid gap-2 text-sm font-medium"
-              >
-                <span>
-                  {score.criterion.name}{" "}
-                  <span className="font-normal text-muted-foreground">
-                    / {score.criterion.maxScore}
-                  </span>
-                </span>
-                {score.criterion.description ? (
-                  <span className="text-xs font-normal text-muted-foreground">
-                    {score.criterion.description}
-                  </span>
-                ) : null}
-                <Input
-                  type="number"
-                  min="0"
-                  max={score.criterion.maxScore}
-                  step="0.5"
-                  value={values[score.criterionId] ?? ""}
-                  onChange={(event) => {
-                    setValues((current) => ({
-                      ...current,
-                      [score.criterionId]: event.target.value,
-                    }));
-                    setState("unsaved");
-                  }}
-                />
-              </label>
-            ))}
+            {scores.map((score) => {
+              const max = Math.max(1, Math.floor(score.criterion.maxScore));
+              const options: number[] = [];
+              for (let i = max; i >= 1; i--) {
+                options.push(i);
+              }
+              const currentValue = values[score.criterionId]?.trim() ?? "";
+              const parsedCurrent = Number(currentValue);
+              if (
+                currentValue !== "" &&
+                Number.isFinite(parsedCurrent) &&
+                !options.includes(parsedCurrent)
+              ) {
+                options.push(parsedCurrent);
+                options.sort((a, b) => b - a);
+              }
+
+              return (
+                <div
+                  key={score.criterionId}
+                  className="grid gap-2 text-sm font-medium"
+                >
+                  <div>
+                    <span>
+                      {score.criterion.name}{" "}
+                      <span className="font-normal text-muted-foreground">
+                        / {score.criterion.maxScore}
+                      </span>
+                    </span>
+                    {score.criterion.description ? (
+                      <p className="mt-0.5 text-xs font-normal text-muted-foreground">
+                        {score.criterion.description}
+                      </p>
+                    ) : null}
+                  </div>
+                  <Select
+                    value={currentValue || null}
+                    onValueChange={(val) => {
+                      setValues((current) => ({
+                        ...current,
+                        [score.criterionId]: val ?? "",
+                      }));
+                      setState("unsaved");
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select score" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {options.map((opt) => (
+                        <SelectItem key={opt} value={String(opt)}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              );
+            })}
             <label className="grid gap-2 text-sm font-medium">
               Notes{" "}
               <Textarea
