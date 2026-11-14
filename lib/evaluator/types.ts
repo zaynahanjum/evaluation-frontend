@@ -22,6 +22,9 @@ export type EvaluationCriterion = {
 export type TeamSubmission = {
   problemStatement: string | null;
   solution: string | null;
+  githubRepoLink?: string | null;
+  deploymentLink?: string | null;
+  driveLink?: string | null;
 };
 
 export type Evaluation = {

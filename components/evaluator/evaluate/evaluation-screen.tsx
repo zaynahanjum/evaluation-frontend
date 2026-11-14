@@ -8,8 +8,12 @@ import {
   ArrowRight,
   CheckCircle2,
   ChevronDown,
+  ExternalLink,
   FileText,
+  FolderGit2,
+  Globe,
   Lightbulb,
+  Link2,
   Save,
   TriangleAlert,
 } from "lucide-react";
@@ -340,27 +344,71 @@ function ScoreEditor({
                 : "Pending"}
           </Badge>
         </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2">
-          <section className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-1.5">
-            <div className="flex items-center gap-2">
-              <FileText className="size-4 text-primary" />
-              <h3 className="text-sm font-semibold text-foreground">Problem Statement</h3>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <section className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <FileText className="size-4 text-primary" />
+                <h3 className="text-sm font-semibold text-foreground">Problem Statement</h3>
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {team.submission?.problemStatement?.trim() ||
+                  "No problem statement submitted yet."}
+              </p>
+            </section>
+            <section className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <Lightbulb className="size-4 text-amber-500" />
+                <h3 className="text-sm font-semibold text-foreground">Proposed Solution</h3>
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                {team.submission?.solution?.trim() ||
+                  "No solution description submitted yet."}
+              </p>
+            </section>
+          </div>
+          {team.submission?.githubRepoLink ||
+          team.submission?.deploymentLink ||
+          team.submission?.driveLink ? (
+            <div className="flex flex-wrap items-center gap-2.5 border-t border-border/60 pt-3">
+              {team.submission?.githubRepoLink ? (
+                <a
+                  href={team.submission.githubRepoLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                >
+                  <FolderGit2 className="size-3.5 text-primary" />
+                  <span>GitHub Repository</span>
+                  <ExternalLink className="size-3 text-muted-foreground" />
+                </a>
+              ) : null}
+              {team.submission?.deploymentLink ? (
+                <a
+                  href={team.submission.deploymentLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                >
+                  <Globe className="size-3.5 text-primary" />
+                  <span>Live Deployment</span>
+                  <ExternalLink className="size-3 text-muted-foreground" />
+                </a>
+              ) : null}
+              {team.submission?.driveLink ? (
+                <a
+                  href={team.submission.driveLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                >
+                  <Link2 className="size-3.5 text-primary" />
+                  <span>Drive / Presentation</span>
+                  <ExternalLink className="size-3 text-muted-foreground" />
+                </a>
+              ) : null}
             </div>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-              {team.submission?.problemStatement?.trim() ||
-                "No problem statement submitted yet."}
-            </p>
-          </section>
-          <section className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-1.5">
-            <div className="flex items-center gap-2">
-              <Lightbulb className="size-4 text-amber-500" />
-              <h3 className="text-sm font-semibold text-foreground">Proposed Solution</h3>
-            </div>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-              {team.submission?.solution?.trim() ||
-                "No solution description submitted yet."}
-            </p>
-          </section>
+          ) : null}
         </CardContent>
       </Card>
       {!scores.length ? (

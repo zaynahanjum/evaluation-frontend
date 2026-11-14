@@ -7,8 +7,12 @@ import {
   BarChart3,
   ChevronRight,
   ClipboardCheck,
+  ExternalLink,
   FileText,
+  FolderGit2,
+  Globe,
   Lightbulb,
+  Link2,
   MessageSquare,
   Trophy,
   UsersRound,
@@ -162,6 +166,7 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                       {pr.name}
                     </TableHead>
                   ))}
+                  <TableHead>Links</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="hidden sm:table-cell">
                     My score
@@ -236,6 +241,59 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                         </TableCell>
                       );
                     })}
+                    <TableCell className="align-middle whitespace-nowrap">
+                      <div
+                        className="flex flex-wrap items-center gap-1.5"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {team.submission?.githubRepoLink ? (
+                          <a
+                            href={team.submission.githubRepoLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium hover:bg-muted transition-colors"
+                            title="GitHub Repository"
+                          >
+                            <FolderGit2 className="size-3 text-primary" />
+                            <span>Code</span>
+                          </a>
+                        ) : null}
+
+                        {team.submission?.deploymentLink ? (
+                          <a
+                            href={team.submission.deploymentLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium hover:bg-muted transition-colors"
+                            title="Live Deployment"
+                          >
+                            <Globe className="size-3 text-primary" />
+                            <span>Demo</span>
+                          </a>
+                        ) : null}
+
+                        {team.submission?.driveLink ? (
+                          <a
+                            href={team.submission.driveLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium hover:bg-muted transition-colors"
+                            title="Presentation / Drive"
+                          >
+                            <Link2 className="size-3 text-primary" />
+                            <span>Drive</span>
+                          </a>
+                        ) : null}
+
+                        {!team.submission?.githubRepoLink &&
+                        !team.submission?.deploymentLink &&
+                        !team.submission?.driveLink ? (
+                          <span className="text-xs text-muted-foreground italic">
+                            —
+                          </span>
+                        ) : null}
+                      </div>
+                    </TableCell>
                     <TableCell>
                       <StatusBadge status={team.evaluationStatus} />
                     </TableCell>
@@ -255,7 +313,7 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                         }}
                       >
                         <FileText className="size-3.5" />
-                        <span className="hidden sm:inline">View PS & Solution</span>
+                        <span className="hidden sm:inline">View details</span>
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -305,6 +363,60 @@ export function AssignmentsView({ filter }: { filter: Filter }) {
                 {viewingTeam?.submission?.solution?.trim() ||
                   "No solution description submitted yet."}
               </p>
+            </div>
+
+            <div className="rounded-xl border border-border/70 bg-muted/20 p-4 space-y-2">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Project Deliverable Links
+              </h4>
+              <div className="flex flex-wrap gap-2 pt-1">
+                {viewingTeam?.submission?.githubRepoLink ? (
+                  <a
+                    href={viewingTeam.submission.githubRepoLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                  >
+                    <FolderGit2 className="size-3.5 text-primary" />
+                    <span>GitHub Repository</span>
+                    <ExternalLink className="size-3 text-muted-foreground" />
+                  </a>
+                ) : null}
+
+                {viewingTeam?.submission?.deploymentLink ? (
+                  <a
+                    href={viewingTeam.submission.deploymentLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                  >
+                    <Globe className="size-3.5 text-primary" />
+                    <span>Live Deployment</span>
+                    <ExternalLink className="size-3 text-muted-foreground" />
+                  </a>
+                ) : null}
+
+                {viewingTeam?.submission?.driveLink ? (
+                  <a
+                    href={viewingTeam.submission.driveLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-xs font-medium transition-colors hover:bg-muted"
+                  >
+                    <Link2 className="size-3.5 text-primary" />
+                    <span>Drive / Presentation</span>
+                    <ExternalLink className="size-3 text-muted-foreground" />
+                  </a>
+                ) : null}
+
+                {!viewingTeam?.submission?.githubRepoLink &&
+                !viewingTeam?.submission?.deploymentLink &&
+                !viewingTeam?.submission?.driveLink ? (
+                  <span className="text-xs italic text-muted-foreground">
+                    No external deliverable links provided.
+                  </span>
+                ) : null}
+              </div>
             </div>
           </div>
 
